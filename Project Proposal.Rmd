@@ -19,7 +19,7 @@ Research question: What types of people are most likely to divorce?
 
 
 (3) the data
-We will use data from the General Social Survey from years 1990 to 2014. The data is available as a cumulative file of cross-sectional samples from all years in SPSS or Stata formats, so we will need to convert. 
+We will use data from the General Social Survey from years 1990 to 2014. The data is available as a cumulative file of cross-sectional samples from all years in SPSS or Stata formats, so we will need to convert it to R. 
 
 
 (4) proposed processing methods
