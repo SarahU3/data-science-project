@@ -9,12 +9,23 @@ output: pdf_document
 knitr::opts_chunk$set(echo = TRUE)
 ```
 
+## Project Proposal: Predicting Divorce for Young Adults
 
 (1) the hypothesis and research questions 
+We hypothesize that factors such as education, race, age when married, having children 
+
 
 (2) data experiment design 
+
+
 (3) the data, 
-(4) proposed processing methods, 
-(5) proposed analytical methods, 
+
+
+(4) proposed processing methods
+
+
+(5) proposed analytical methods
+
+
 (6) ethical considerations of such a project.
 
