@@ -25,7 +25,7 @@ We expect that certain social and political views affect the health and length o
 
 
 ###(2) Data Experiment Design 
-For married individuals ages 25 to 45, we will predict the probability of getting a divorce within the first seven years of marriage based on the respondent's social views and history, include attitudes about pornography, fundamentalism of religious views, and instances of premarital sex or extra-marital sex. Our analysis will also use standard factors such as education, race, age when married, years married, religion, political views and having children. 
+For married individuals ages 25 to 45, we will predict the probability of getting a divorce within the first seven years of marriage based on the respondent's social views and history, include attitudes about pornography, fundamentalism of religious views, and instances of premarital sex or extra-marital sex. Our analysis will also use standard factors such as education, race, religion, political views and having children. 
 
 ###(3) Data
 We will use data from the General Social Survey from years 1990 to 2014, approximately a generational cohort. The data is available as a cumulative file of cross-sectional samples from all years 1972 to 2014, but we are limiting our selection based on the availability of specific variables. 
