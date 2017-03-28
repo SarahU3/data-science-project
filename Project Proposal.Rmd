@@ -10,27 +10,38 @@ knitr::opts_chunk$set(echo = TRUE)
 ```
 
 ## Project Proposal: Predicting Divorce for Young Adults
-
-(1) the hypothesis and research questions 
-For people age 25 to 45, we will predict divorce using standard factors such as education, race, age when married, years married, religion, political views and having children. However, we will also include attitudes about pornography, instances of premarital sex, premarital sex as a teenager and extra-marital sex. 
-Research question: What types of people are most likely to divorce?
-
-(2) data experiment design 
-
-
-(3) the data
-We will use data from the General Social Survey from years 1990 to 2014. The data is available as a cumulative file of cross-sectional samples from all years in SPSS or Stata formats, so we will need to convert it to R. 
+In the U.S., 
+divorce rates
+marriage rates
+likelihood of ending in the first 7 years
+younger generations have different attitudes towards marriage, marry later
+same-sex marriage and changing legal attitudes
+To link to text that says,e.g., "example link" use [example link](http://www.bgsu.edu/ncfmr/resources/data/family-profiles/anderson-divorce-rate-us-geo-2015-fp-16-21.html)
 
 
-(4) proposed processing methods
+###(1) Hypothesis and Research Questions 
+Research question: What types of people are most likely to divorce? 
+We expect that certain social and political views affect the health and length of a marriage. Those characteristics will allow us to predict who is most likely to get a divorce or remain married. 
+
+
+###(2) Data Experiment Design 
+For married individuals ages 25 to 45, we will predict the probability of getting a divorce within the first seven years of marriage based on the respondent's social views and history, include attitudes about pornography, fundamentalism of religious views, and instances of premarital sex or extra-marital sex. Our analysis will also use standard factors such as education, race, age when married, years married, religion, political views and having children. 
+
+###(3) Data
+We will use data from the General Social Survey from years 1990 to 2014, approximately a generational cohort. The data is available as a cumulative file of cross-sectional samples from all years 1972 to 2014, but we are limiting our selection based on the availability of specific variables. 
+
+###(4) Proposed Processing Methods
 Using the train-validate-test method, we will separate our available data in to a 70-15-15 split. 
 
-(5) proposed analytical methods
+###(5) Proposed Analytical Methods
 We will test three methods of analyzing the data for predictions:
 1. Logistic regression
 2. Decision trees
 3. Random forest
 
-(6) ethical considerations of such a project
+Based on the accuracy results of each method, we will determine the best model for prediction and apply that for our insight. 
+
+###(6) Ethical Considerations 
+This could affect real-life relationships, depending on how the results are used, especially if marriage counselors included it as a tool in their work. Unfortunately, someone might be influenced to consider a divorce who wouldn't have or a couple might not get married who had thought about it, if the prediction indicates that their marriage is unlikely to last. On the other hand, this could provide support for dating services that cater to those looking for long-term relationships by identifying personal factors that contribute to marriage longevity. 
 
 
