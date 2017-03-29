@@ -10,8 +10,24 @@ knitr::opts_chunk$set(echo = TRUE)
 ```
 
 ## Project Proposal: Predicting Divorce for Young Adults
-In the U.S., 
-divorce rates
+In the past X years/decades, American views on love, sex, marriage, and divorce have underwent drastic change. Though the 1960s featured hippies, Woodstock, sexual freedom, and the infamous 'Summer of Love,' the popularity of casual sex gave way to greater conservatism with the end of the Vietnam war, the growing [politicization of sex](http://www.nbcnews.com/id/19053382/ns/health-sexual_health/t/free-love-was-there-price-pay/), skyrocketing rates of STDs, and the subsequent HIV/AIDS epidemic. 
+
+However, within the past decade, perceptions of sex, marriage, and love have transformed again. On college campuses, research and discussions about the 'hook-up culture,' are rife. Young adults' fears of commitment are partially blamed on the exponentially wider pool of potential mates, supported by the introduction of mobile dating apps and online matchmaking services. The logic goes, 'Why settle when you can always potentially have more? Casual sex - in the form of one-night stands, "hook-up buddies," "friends-with-benefits," and the like - requires less commitment. 
+
+With 
+However, similar circumstances 
+baby boomers lead with divorce rates 
+headed down that same path? 
+NYT article about love and picking the right person 
+Aziz Ansari once [said](https://www.goodreads.com/work/quotes/43014915-modern-romance), "We’re better off spending quality time getting to know actual people than spending hours with our devices, seeing who else is out there.” 
+[other source](http://www.citylab.com/housing/2015/02/where-in-the-us-are-there-more-single-men-than-women/385369/) 
+
+
+Similarly, 
+- casual sex
+- baby boomers = ultimately end and lead in divorce 
+- are we on a similar path/
+
 marriage rates
 likelihood of ending in the first 7 years
 younger generations have different attitudes towards marriage, marry later
