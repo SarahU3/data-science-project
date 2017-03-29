@@ -1,7 +1,4 @@
 ---
-title: "Project Proposal"
-author: "Celeste Chen and Sarah Unbehaun"
-date: "March 29, 2017"
 output: pdf_document
 ---
 
@@ -10,42 +7,24 @@ knitr::opts_chunk$set(echo = TRUE)
 ```
 
 ## Project Proposal: Predicting Divorce for Young Adults
+## Celeste Chen and Sarah Unbehaun, March 29, 2017
 
-###Introduction 
-In the past few decades, American views on love, sex, marriage, and divorce have underwent drastic change. Baby boomers who experienced the sexual freedom of the 1960s gave way to greater conservatism with the end of the Vietnam war, the growing [politicization of sex](http://www.nbcnews.com/id/19053382/ns/health-sexual_health/t/free-love-was-there-price-pay/), skyrocketing rates of STDs, and the subsequent HIV/AIDS epidemic. 
+####Introduction 
+In the past few decades, American views on love, sex, marriage, and divorce have undergone drastic changes. The sexual freedom of the 1960s gave way to greater conservatism with the end of the Vietnam war and the growing [politicization of sex](http://www.nbcnews.com/id/19053382/ns/health-sexual_health/t/free-love-was-there-price-pay/).  A [2014 study](https://www.washingtonpost.com/news/wonk/wp/2014/03/27/divorce-is-actually-on-the-rise-and-its-the-baby-boomers-fault/?utm_term=.4c73fcedb8fc) found that baby boomers who had been part of the free-love generation not only had (1) "unprecedented divorce incidence in 1980 and 1990 when they were in their 20s and 30s" but that (2) this pattern continued well into the present. Researchers noted that the "baby Boom generation was responsible for the extraordinary rise in marital instability after 1970. They are now  middle-aged, but their pattern of high marital instability continues." 
 
-However, within the past decade, perceptions of sex, marriage, and love have transformed again. Young adults' fears of commitment are partially blamed on the exponentially wider pool of potential mates, supported by the introduction of mobile dating apps and online matchmaking services. With fewer Americans getting married each year, some cite current sexual and relationship norms as providing convenient opportunities for people to put off marriage and serious relationships. [Others](https://learning.blogs.nytimes.com/2014/02/12/is-hookup-culture-leaving-your-generation-unhappy-and-unprepared-for-love/) are  concerned that these relationships provide fewer opportunities for emotional intimacy and vulnerability, both of which are critical for strong, long-lasting relationships. 
+Within the past decade, perceptions of sex, marriage, and love have transformed again. With [fewer Americans](https://www.cdc.gov/nchs/nvss/marriage_divorce_tables.htm) getting married each year, divorce rates are dropping but continue to be high. Are millennials headed towards a similar path when they do decide to tie the knot? With the new legality of same-sex marriage and changing attitudes about marriage in general, has the concept of marriage been so fundamentally changed that its participants may be more or less primed for eventual divorce? As future generations build, participate in, and redefine relationships, what sorts of beliefs and life experiences can we use to predict whether or not a couple will divorce? 
 
-Nevertheless, even as marriage rates decline, divorce rates continue to be [high - give numbers](INSERT SOURCE). A [2014 study](https://www.washingtonpost.com/news/wonk/wp/2014/03/27/divorce-is-actually-on-the-rise-and-its-the-baby-boomers-fault/?utm_term=.4c73fcedb8fc) found that baby boomers who had been part of the free-love generation not only had (1) "unprecedented divorce incidence in 1980 and 1990 when they were in their 20s and 30s" but that (2) this pattern continued well into the present. Researchers noted that the "baby Boom generation was responsible for the extraordinary rise in marital instability after 1970. They are now  middle-aged, but their pattern of high marital instability continues."
-
-Are millennials headed towards a similar path when they do decide to tie the knot? With the new legality of same-sex marriage and changing legal attitudes, has the concept of marriage been so fundamentally changed such that its participants may be more or less primed for eventual divorce? As future generations build, participate in, and redefine relationships, what sorts of beliefs and life experiences can we use to predict whether or not a couple will divorce? 
-
-Aziz Ansari once [said](https://www.goodreads.com/work/quotes/43014915-modern-romance), "We’re better off spending quality time getting to know actual people than spending hours with our devices, seeing who else is out there.” We seek to predict whether or not a married respondent's marriage will last within the next seven years, or whether it will instead end in divorce. We will base our predictions on the respondent's past sexual history, and social and political views, in order to identify particular characteristics and/or profiles of respondents whose marriage may/not be long-lasting. 
-
-
-###(1) Hypothesis and Research Questions 
-Research question: What types of people are most likely to divorce? 
+#####Hypothesis and Research Questions 
 We expect that certain social and political views affect the health and length of a marriage. Those characteristics will allow us to predict who is most likely to get a divorce or remain married. 
+Research question: What personal characteristics or views are most highly associated with divorce?
 
-
-###(2) Data Experiment Design 
+#####Data Experiment Design 
 For married individuals ages 25 to 45, we will predict the probability of getting a divorce within the first seven years of marriage based on the respondent's social views and history, include attitudes about pornography, fundamentalism of religious views, and instances of premarital sex or extra-marital sex. Our analysis will also use standard factors such as education, race, religion, political views and having children. 
 
-###(3) Data
-We will use data from the General Social Survey from years 1990 to 2014, approximately a generational cohort. The data is available as a cumulative file of cross-sectional samples from all years 1972 to 2014, but we are limiting our selection based on the availability of specific variables. 
+#####Data, Processing and Analytical Methods
+We will use data from the General Social Survey from years 1990 to 2014, approximately a generational cohort. The data is available as a cumulative file of cross-sectional samples from all years 1972 to 2014, but we are limiting our selection based on the availability of specific variables. The data should be fairly complete for the years selected and is already formatted. We may need to use weights in our analysis in accordance with the accompanying codebook. Using the train-validate-test method, we will separate our available data in to a 70-15-15 split in order to train our algorithm and assess its accuracy. We will test three methods of analyzing the data for predictions: (1) logistic regression, (2) decision trees, and (3) random forest. Based on the accuracy results of each method, we will determine the best model for prediction. 
 
-###(4) Proposed Processing Methods
-Using the train-validate-test method, we will separate our available data in to a 70-15-15 split. 
-
-###(5) Proposed Analytical Methods
-We will test three methods of analyzing the data for predictions:
-1. Logistic regression
-2. Decision trees
-3. Random forest
-
-Based on the accuracy results of each method, we will determine the best model for prediction and apply that for our insight. 
-
-###(6) Ethical Considerations 
+#####Ethical Considerations 
 This could affect real-life relationships, depending on how the results are used, especially if marriage counselors included it as a tool in their work. Unfortunately, someone might be influenced to consider a divorce who wouldn't have or a couple might not get married who had thought about it, if the prediction indicates that their marriage is unlikely to last. On the other hand, this could provide support for dating services that cater to those looking for long-term relationships by identifying personal factors that contribute to marriage longevity. 
 
 
