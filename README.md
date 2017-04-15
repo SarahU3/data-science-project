@@ -24,21 +24,21 @@ In addition to standard survey data variables (weights, id, year, etc.), we have
 - "hapmar" - How would you describe your marriage - (1) very happy, (2) pretty happy, (3) not too happy, (8) don't know, (9) no answer, (IAP) not applicable
 - "relig" - Religious preference: (1) Protestant; (2) Catholic; (3) Jewish; (4) None; (5) Other; (6) Buddhism; (7) Hinduism; (8) Other Eastern Religions; (9) Muslim/Islam; (10) Orthodox-Christian; (11) Christian; (12) Native American; (13) Inter-NOndenomenational; (98) Don't know; (99) No Answer
 - "denom" - Specific Denomination if Protestant: Southern Baptist, United Methodist, Baptist (don't know which), Other 
-- "fund" 
-- "childs"
-- "age"
-- "divorce"
-- "widowed"
-- "educ"
-- "natdrug"
-- "wrkstat"
-- "spwrksta"
-- "sphrs2" 
-- "polviews" 
-- "happy" 
-- "trust"
-- "class"
-- "income"
+- "fund": how fundamental is respondent (fundamentalist, moderate, liberal)
+- "childs": number of children (0-8)
+- "age": age of respondent (18-89)
+- "divorce": ever been divorced or separated
+- "widowed": ever been widowed
+- "educ": highest year of school completed (0-20)
+- "natdrug": dealing with drug addiction
+- "wrkstat": respondent's labor force status (fulltime, parttime, retired, keeping house, school, unemployed, other)
+- "spwrksta": spouse's labor force status (fulltime, parttime, retired, keeping house, school, unemployed, other)
+- "sphrs2": number of hours spouse usually works per week
+- "polviews": think of self as liberal or conservative (liberal, slightly liberal, moderate, slightly conservative, conservative, other)
+- "happy": general happiness (not too happy, pretty happy, or very happy)
+- "trust": can people be trusted (can, cannot, or depends)
+- "class": subjective class identification (lower, working, middle, upper)
+- "income": total family income ($8000-9999, $10000-14999, $15000-19999, $20000-24999, $25000 or more, other)
 
 ## Usage 
 
