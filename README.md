@@ -9,7 +9,36 @@ Our project will provide a way for marriage counselors to perform an initial eva
 Our null hypothesis will be that a respondent will not become divorced, whereas our alternate hypothesis is that a respondent will become divorced. A respondent's answers will be compared to the occurrences of divorce and related risk factors found in our dataset, upon which we will have trained our prediction model. Our model will then provide a probability score of how likely a respondent will become divorced in the future.  
 
 ## Data Used
-Our dataset will be taken from the General Social Survey and focus on observations from 1990 to 2014. 
+Our dataset will be taken from the General Social Survey (GSS) and focus on observations from 1990 to 2014. According to the [GSS website](http://gss.norc.org/About-The-GSS) 
+>The GSS contains a standard core of demographic, behavioral, and attitudinal questions, plus topics of special interest. Among the topics covered are civil liberties, crime and violence, intergroup tolerance, morality, national spending priorities, psychological well-being, social mobility, and stress and traumatic events. Altogether the GSS is the single best source for sociological and attitudinal trend data covering the United States.
+
+In addition to standard survey data variables (weights, id, year, etc.), we have extracted the following variables for our analysis:
+- "sexeduc" 
+- "region" 
+- "premarsx"
+- "xmarsex"
+- "pornlaw"
+- "agewed" (incomplete years, may have to be dropped)
+- "marital"
+- "martype"
+- "partyid" 
+- "hapmar"
+- "denom"
+- "fund" 
+- "childs"
+- "age"
+- "divorce"
+- "widowed"
+- "educ"
+- "natdrug"
+- "wrkstat"
+- "spwrksta"
+- "sphrs2" 
+- "polviews" 
+- "happy" 
+- "trust"
+- "class"
+- "income"
 
 ## Usage 
 
