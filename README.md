@@ -11,5 +11,10 @@ Our project will provide a way for marriage counselors to perform an initial eva
 Our dataset will be taken from the General Social Survey and focus on observations from 1990 to 2014. 
 
 ### Progress Log: 
++ Created ReadMe file 
++ Downloaded GSS data in SPSS format and converted to .rda
++ Subsetted original data frame to variables of interest
 
 ### Contributors: 
++ Celeste - Writing 
++ Sarah = Data wrangling 
