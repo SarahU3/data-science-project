@@ -24,21 +24,22 @@ In addition to standard survey data variables (weights, id, year, etc.), we have
 - "partyid" 
 - "hapmar"
 - "denom"
-- "fund" 
-- "childs"
-- "age"
-- "divorce"
-- "widowed"
-- "educ"
-- "natdrug"
-- "wrkstat"
-- "spwrksta"
-- "sphrs2" 
-- "polviews" 
-- "happy" 
-- "trust"
-- "class"
-- "income"
+- "fund": how fundamental is respondent (fundamentalist, moderate, liberal)
+- "childs": number of children (0-8)
+- "age": age of respondent (18-89)
+- "divorce": ever been divorced or separated
+- "widowed": ever been widowed
+- "educ": highest year of school completed (0-20)
+- "natdrug": dealing with drug addiction
+- "wrkstat": respondent's labor force status (fulltime, parttime, retired, keeping house, school, unemployed, other)
+- "spwrksta": spouse's labor force status (fulltime, parttime, retired, keeping house, school, unemployed, other)
+- "sphrs2": number of hours spouse usually works per week
+- "polviews": think of self as liberal or conservative (liberal, slightly liberal, moderate, slightly conservative, conservative, other)
+- "happy": general happiness (not too happy, pretty happy, or very happy)
+- "trust": can people be trusted (can, cannot, or depends)
+- "class": subjective class identification (lower, working, middle, upper)
+- "income": total family income ($8000-9999, $10000-14999, $15000-19999, $20000-24999, $25000 or more, other)
+
 
 ## Usage 
 
