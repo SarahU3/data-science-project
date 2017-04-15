@@ -25,7 +25,7 @@ load("GSSdivorce.rda")
 #plots go here
 ```
 
-### Step Three:
+### Step Three: Try clustering
 
 ``` {r }
 ```

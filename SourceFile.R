@@ -45,7 +45,7 @@ head(GSS.complete)
 
 var_list <- c("oversamp", "formwt", "wtssall", "sampcode", "sample", "id", "ballot", 
           "year", "sexeduc", "region", "premarsx", "xmarsex", "pornlaw", "agewed", 
-          "marital", "martype", "partyid", "hapmar", "denom", "fund", "childs", 
+          "marital", "martype", "partyid", "hapmar", "denom", "relig", "fund", "childs", 
           "age", "divorce", "widowed", "educ", "natdrug", "wrkstat", "spwrksta",
           "sphrs2", "polviews", "happy", "trust", "class", "income")
 
