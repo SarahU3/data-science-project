@@ -45,8 +45,9 @@ In addition to standard survey data variables (weights, id, year, etc.), we have
 - "divorce_analysis.rmd": The analysis file uses our "GSSdivorce.rda" dataset to examine the data and build our analysis. 
 
 ## Progress Log 
++ Created GitHub repository and downloaded GSS data (3/19)
 + Created ReadMe file (4/15)
-+ Downloaded GSS data in SPSS format and converted to .rda (4/15)
++ Converted GSS SPSS data file to .rda (4/15)
 + Subsetted original data frame to variables of interest (4/15)
 + Created project file (4/15)
 
