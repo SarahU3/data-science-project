@@ -7,10 +7,10 @@ Given the evolving discourse and perspectives on marriage, we seek to predict th
 ## Use
 Our project will provide a way for marriage counselors to perform an initial evaluation of how a respondent's social and religious views, together with previous sexual experiences, may contribute to his/her risk of a divorce. This project will provide a set of questions for marriage counselors to use with their clients in order to evaluate and predict whether or not a marriage will end in divorce. A respondent's answers will be compared to the occurrences of divorce and related risk factors found in our dataset, upon which we will have trained our prediction model. Our model will then provide a probability score of how likely a respondent will become divorced in the future.  
 
-## Data Used: 
+## Data Used
 Our dataset will be taken from the General Social Survey and focus on observations from 1990 to 2014. 
 
-## Usage: 
+## Usage 
 
 
 ## Progress Log 
