@@ -1,6 +1,4 @@
-# data-science-project
- 
-## Bad Romance? 
+# Bad Romance? 
 ### <i> Predicting Marriage/Divorce Outcomes in Young Couples </i> 
 
 ### Synopsis/Overview: 
