@@ -41,7 +41,8 @@ In addition to standard survey data variables (weights, id, year, etc.), we have
 - "income": total family income ($8000-9999, $10000-14999, $15000-19999, $20000-24999, $25000 or more, other)
 
 ## Usage 
-
+- "SourceFile.r": The source file runs the code necessary to download the zipped SPSS (.sav), unzip, convert to an R data file (.rda), save the .rda file as "GSScomplete.rda", and extract our variables of interest into a new R data file, "GSSdivorce.rda". **Due to the large size of the original GSS dataset, this file should only be run if a new copy of the complete GSS dataset is required.**
+- "divorce_analysis.rmd": The analysis file uses our "GSSdivorce.rda" dataset to examine the data and build our analysis. 
 
 ## Progress Log 
 + Created ReadMe file (4/15)
