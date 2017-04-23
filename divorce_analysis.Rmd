@@ -14,18 +14,102 @@ load("GSSdivorce.rda")
 ```
 
 ### Step One: Check for missing data
-
 ```{r missing, echo=FALSE}
-
+#remove sphrs2, agewed, martype
+GSS.divorce.na <- GSS.divorce
+var_list <- c("oversamp", "formwt", "wtssall", "sampcode", "sample", "id", "ballot", 
+          "year", "sexeduc", "region", "premarsx", "xmarsex", "pornlaw", "marital", 
+          "partyid", "hapmar", "denom", "fund", "childs", "age", "educ", "wrkstat", 
+          "spwrksta", "polviews", "happy", "trust", "class", "income", "version")
+GSS.divorce <- GSS.divorce.na[GSS.divorce$year>=1996,var_list]
+GSS.divorce <- GSS.divorce[GSS.divorce$marital=="MARRIED" | GSS.divorce$marital=="DIVORCED" | GSS.divorce$marital=="SEPARATED", ]
 ```
 
 ### Step Two: Visually check distributions of variable responses
 
 ```{r visuals, echo=FALSE}
-#plots go here
+library(ggplot2)
+library(plyr)
+
+#premarital sex
+tab <- as.data.frame(table(GSS.divorce$marital, GSS.divorce$premarsx))
+colnames(tab) <- c("status", "premarital", "count")
+pie_1 <- ggplot(tab, aes(status, premarital)) + 
+              geom_point(aes(size = count), colour = "green") + 
+              theme_bw() + xlab("Marital Status?") + ylab("Opinion on premarital sex?") + scale_size_continuous(range=c(3,15)) + theme(plot.title = element_text(size = 10), legend.position="none")  + coord_fixed(ratio = 1)
+
+tab <- as.data.frame(table(GSS.divorce$marital, GSS.divorce$pornlaw))
+colnames(tab) <- c("status", "porn", "count")
+pie_2 <- ggplot(tab, aes(status, porn)) + 
+              geom_point(aes(size = count), colour = "green") + 
+              theme_bw() + xlab("Marital Status?") + ylab("Opinion on pornography regulation?") + scale_size_continuous(range=c(3,15)) + theme(plot.title = element_text(size = 10), legend.position="none")  + coord_fixed(ratio = 1)
+
+tab <- as.data.frame(table(GSS.divorce$marital, GSS.divorce$xmarsex))
+colnames(tab) <- c("status", "exmar", "count")
+pie_3 <- ggplot(tab, aes(status, exmar)) + 
+              geom_point(aes(size = count), colour = "green") + 
+              theme_bw() + xlab("Marital Status?") + ylab("Opinion on extramarital sex?") + scale_size_continuous(range=c(3,15)) + theme(plot.title = element_text(size = 10), legend.position="none")  + coord_fixed(ratio = 1)
+
+tab <- as.data.frame(table(GSS.divorce$marital, GSS.divorce$partyid))
+colnames(tab) <- c("status", "party", "count")
+pie_4 <- ggplot(tab, aes(status, party)) + 
+              geom_point(aes(size = count), colour = "green") + 
+              theme_bw() + xlab("Marital Status?") + ylab("Party identification?") + scale_size_continuous(range=c(3,15)) + theme(plot.title = element_text(size = 10), legend.position="none")  + coord_fixed(ratio = 1)
+
+tab <- as.data.frame(table(GSS.divorce$marital, GSS.divorce$happy))
+colnames(tab) <- c("status", "happy", "count")
+pie_5 <- ggplot(tab, aes(status, happy)) + 
+              geom_point(aes(size = count), colour = "green") + 
+              theme_bw() + xlab("Marital Status?") + ylab("How happy are you?") + scale_size_continuous(range=c(3,15)) + theme(plot.title = element_text(size = 10), legend.position="none")  + coord_fixed(ratio = 1)
+
+tab <- as.data.frame(table(GSS.divorce$marital, GSS.divorce$fund))
+colnames(tab) <- c("status", "fund", "count")
+pie_6 <- ggplot(tab, aes(status, fund)) + 
+              geom_point(aes(size = count), colour = "green") + 
+              theme_bw() + xlab("Marital Status?") + ylab("Fundamentalism of religion?") + scale_size_continuous(range=c(3,15)) + theme(plot.title = element_text(size = 10), legend.position="none")  + coord_fixed(ratio = 1)
+
+tab <- as.data.frame(table(GSS.divorce$marital, GSS.divorce$class))
+colnames(tab) <- c("status", "class", "count")
+pie_7 <- ggplot(tab, aes(status, class)) + 
+              geom_point(aes(size = count), colour = "green") + 
+              theme_bw() + xlab("Marital Status?") + ylab("Self-identified class?") + scale_size_continuous(range=c(3,15)) + theme(plot.title = element_text(size = 10), legend.position="none")  + coord_fixed(ratio = 1)
+
+tab <- as.data.frame(table(GSS.divorce$marital, GSS.divorce$wrkstat))
+colnames(tab) <- c("status", "work", "count")
+pie_8 <- ggplot(tab, aes(status, work)) + 
+              geom_point(aes(size = count), colour = "green") + 
+              theme_bw() + xlab("Marital Status?") + ylab("Work status?") + scale_size_continuous(range=c(3,15)) + theme(plot.title = element_text(size = 10), legend.position="none")  + coord_fixed(ratio = 1)
+
+tab <- as.data.frame(table(GSS.divorce$marital, GSS.divorce$educ))
+colnames(tab) <- c("status", "edu", "count")
+pie_9 <- ggplot(tab, aes(status, edu)) + 
+              geom_point(aes(size = count), colour = "green") + 
+              theme_bw() + xlab("Marital Status?") + ylab("Years of education?") + scale_size_continuous(range=c(3,15)) + theme(plot.title = element_text(size = 10), legend.position="none")  + coord_fixed(ratio = 1)
+
+tab <- as.data.frame(table(GSS.divorce$marital, GSS.divorce$childs))
+colnames(tab) <- c("status", "child", "count")
+pie_10 <- ggplot(tab, aes(status, child)) + 
+              geom_point(aes(size = count), colour = "green") + 
+              theme_bw() + xlab("Marital Status?") + ylab("Children?") + scale_size_continuous(range=c(3,15)) + theme(plot.title = element_text(size = 10), legend.position="none")  + coord_fixed(ratio = 1)
+
+tab <- as.data.frame(table(GSS.divorce$marital, GSS.divorce$sexeduc))
+colnames(tab) <- c("status", "sexed", "count")
+pie_11 <- ggplot(tab, aes(status, sexed)) + 
+              geom_point(aes(size = count), colour = "green") + 
+              theme_bw() + xlab("Marital Status?") + ylab("Age?") + scale_size_continuous(range=c(3,15)) + theme(plot.title = element_text(size = 10), legend.position="none")  + coord_fixed(ratio = 1)
+
+tab <- as.data.frame(table(GSS.divorce$marital, GSS.divorce$region))
+colnames(tab) <- c("status", "region", "count")
+pie_12 <- ggplot(tab, aes(status, region)) + 
+              geom_point(aes(size = count), colour = "green") + 
+              theme_bw() + xlab("Marital Status?") + ylab("Region?") + scale_size_continuous(range=c(3,15)) + theme(plot.title = element_text(size = 10), legend.position="none")  + coord_fixed(ratio = 1)
+
+
 ```
 
 ### Step Three: Try clustering
 
 ``` {r }
+
+
 ```

@@ -23,7 +23,7 @@ library(foreign)
 #save(GSS.complete , file = "GSScomplete.rda")
 
 ## load complete data set, if necessary
-load("GSScomplete.rda")
+load("C:/Users/Sarah/Documents/GitHub/data-science-project/GSScomplete.rda")
 str(GSS.complete)
 head(GSS.complete)
 
@@ -45,9 +45,9 @@ head(GSS.complete)
 
 var_list <- c("oversamp", "formwt", "wtssall", "sampcode", "sample", "id", "ballot", 
           "year", "sexeduc", "region", "premarsx", "xmarsex", "pornlaw", "agewed", 
-          "marital", "martype", "partyid", "hapmar", "denom", "relig", "fund", "childs", 
+          "marital", "partyid", "hapmar", "denom", "fund", "childs", 
           "age", "divorce", "widowed", "educ", "natdrug", "wrkstat", "spwrksta",
-          "sphrs2", "polviews", "happy", "trust", "class", "income")
+          "polviews", "happy", "trust", "class", "income", "version")
 
 GSS.divorce <- GSS.complete[GSS.complete$year>=1990,var_list]
 
