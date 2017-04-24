@@ -21,7 +21,7 @@ In addition to standard survey data variables (weights, id, year, etc.), we have
 - "agewed" (incomplete years, may have to be dropped): How old was the respondent when their (current) marriage began?
 - "marital": Marital status (married, widowed, divorced, separated, or never been married)
 - "partyid": Party ID ((0) strong Democrat; (1) not very strong Democrat; (2) Independent, close to Democrat; (3) Independent (neither, no response); (4) Independent, close to Republican; (5) Not very strong Republican; (6) Strong Republican; (7) Other party, refused to say; (8) Don't know; (9) No answer)
-- "hapmar": How would you describe your marriage ((1) very happy, (2) pretty happy, (3) not too happy, (8) don't know, (9) no answer, (IAP) not applicable)
+- "hapmar" (incomplete years, may have to be dropped): How would you describe your marriage ((1) very happy, (2) pretty happy, (3) not too happy, (8) don't know, (9) no answer, (IAP) not applicable)
 - "relig": Religious preference ((1) Protestant; (2) Catholic; (3) Jewish; (4) None; (5) Other; (6) Buddhism; (7) Hinduism; (8) Other Eastern Religions; (9) Muslim/Islam; (10) Orthodox-Christian; (11) Christian; (12) Native American; (13) Inter-NOndenomenational; (98) Don't know; (99) No Answer)
 - "denom": Specific Denomination if Protestant (Southern Baptist, United Methodist, Baptist (don't know which), Other)
 - "fund": how fundamental is respondent (fundamentalist, moderate, liberal)
