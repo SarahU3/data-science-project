@@ -48,6 +48,7 @@ var_list <- c("oversamp", "formwt", "wtssall", "sampcode", "sample", "id", "ball
           "marital", "partyid", "hapmar", "denom", "fund", "childs", "degree",
           "age", "divorce", "widowed", "educ", "natdrug", "wrkstat", "spwrksta",
           "polviews", "happy", "trust", "class", "income", "version")
+GSS.divorce$Agecat1<-cut(GSS.divorce$age, c(0,18,25,35,45,55,65,75,85,95))
 
 GSS.divorce <- GSS.complete[GSS.complete$year>=1990,var_list]
 
