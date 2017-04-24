@@ -23,6 +23,8 @@ var_list <- c("oversamp", "formwt", "wtssall", "sampcode", "sample", "id", "ball
           "spwrksta", "polviews", "happy", "trust", "class", "income", "version")
 GSS.divorce <- GSS.divorce.na[GSS.divorce$year>=1996,var_list]
 GSS.divorce <- GSS.divorce[GSS.divorce$marital=="MARRIED" | GSS.divorce$marital=="DIVORCED" | GSS.divorce$marital=="SEPARATED", ]
+GSS.divorce
+GSS.divorce$marital <- factor(GSS.divorce$marital)
 ```
 
 ### Step Two: Visually check distributions of variable responses
@@ -31,7 +33,6 @@ GSS.divorce <- GSS.divorce[GSS.divorce$marital=="MARRIED" | GSS.divorce$marital=
 library(ggplot2)
 library(plyr)
 
-#premarital sex
 tab <- as.data.frame(table(GSS.divorce$marital, GSS.divorce$premarsx))
 colnames(tab) <- c("status", "premarital", "count")
 pie_1 <- ggplot(tab, aes(status, premarital)) + 
@@ -96,7 +97,7 @@ tab <- as.data.frame(table(GSS.divorce$marital, GSS.divorce$sexeduc))
 colnames(tab) <- c("status", "sexed", "count")
 pie_11 <- ggplot(tab, aes(status, sexed)) + 
               geom_point(aes(size = count), colour = "green") + 
-              theme_bw() + xlab("Marital Status?") + ylab("Age?") + scale_size_continuous(range=c(3,15)) + theme(plot.title = element_text(size = 10), legend.position="none")  + coord_fixed(ratio = 1)
+              theme_bw() + xlab("Marital Status?") + ylab("Sex education in schools?") + scale_size_continuous(range=c(3,15)) + theme(plot.title = element_text(size = 10), legend.position="none")  + coord_fixed(ratio = 1)
 
 tab <- as.data.frame(table(GSS.divorce$marital, GSS.divorce$region))
 colnames(tab) <- c("status", "region", "count")
@@ -104,10 +105,15 @@ pie_12 <- ggplot(tab, aes(status, region)) +
               geom_point(aes(size = count), colour = "green") + 
               theme_bw() + xlab("Marital Status?") + ylab("Region?") + scale_size_continuous(range=c(3,15)) + theme(plot.title = element_text(size = 10), legend.position="none")  + coord_fixed(ratio = 1)
 
+tab <- as.data.frame(table(GSS.divorce$marital, GSS.divorce$trust))
+colnames(tab) <- c("status", "trust", "count")
+pie_13 <- ggplot(tab, aes(status, trust)) + 
+              geom_point(aes(size = count), colour = "green") + 
+              theme_bw() + xlab("Marital Status?") + ylab("Can people be trusted?") + scale_size_continuous(range=c(3,15)) + theme(plot.title = element_text(size = 10), legend.position="none")  + coord_fixed(ratio = 1)
 
 ```
 
-### Step Three: Try clustering
+### Step Three: Try regression, decision trees, random forest, clustering
 
 ``` {r }
 
