@@ -17,11 +17,11 @@ load("GSSdivorce.rda")
 ```{r missing, echo=FALSE}
 #remove sphrs2, agewed, martype
 GSS.divorce.na <- GSS.divorce
-var_list <- c("oversamp", "formwt", "wtssall", "sampcode", "sample", "id", "ballot", 
-          "year", "sexeduc", "region", "premarsx", "xmarsex", "pornlaw", "marital", 
-          "partyid", "hapmar", "denom", "fund", "childs", "age", "educ", "wrkstat", 
-          "spwrksta", "polviews", "happy", "trust", "class", "income", "version")
-GSS.divorce <- GSS.divorce.na[GSS.divorce$year>=1996,var_list]
+#var_list <- c("oversamp", "formwt", "wtssall", "sampcode", "sample", "id", "ballot", 
+          #"year", "sexeduc", "region", "premarsx", "xmarsex", "pornlaw", "marital", 
+          #"partyid", "hapmar", "denom", "fund", "childs", "age", "educ", "wrkstat", 
+          #"spwrksta", "polviews", "happy", "trust", "class", "income", "version")
+#GSS.divorce <- GSS.divorce.na[GSS.divorce$year>=1996,var_list]
 GSS.divorce <- GSS.divorce[GSS.divorce$marital=="MARRIED" | GSS.divorce$marital=="DIVORCED" | GSS.divorce$marital=="SEPARATED", ]
 GSS.divorce
 GSS.divorce$marital <- factor(GSS.divorce$marital)
@@ -110,6 +110,24 @@ colnames(tab) <- c("status", "trust", "count")
 pie_13 <- ggplot(tab, aes(status, trust)) + 
               geom_point(aes(size = count), colour = "green") + 
               theme_bw() + xlab("Marital Status?") + ylab("Can people be trusted?") + scale_size_continuous(range=c(3,15)) + theme(plot.title = element_text(size = 10), legend.position="none")  + coord_fixed(ratio = 1)
+
+tab <- as.data.frame(table(GSS.divorce$marital, GSS.divorce$reg16))
+colnames(tab) <- c("status", "region16", "count")
+pie_20 <- ggplot(tab, aes(status, region16)) + 
+              geom_point(aes(size = count), colour = "green") + 
+              theme_bw() + xlab("Marital Status?") + ylab("Region at age 16?") + scale_size_continuous(range=c(3,15)) + theme(plot.title = element_text(size = 10), legend.position="none")  + coord_fixed(ratio = 1)
+
+tab <- as.data.frame(table(GSS.divorce$marital, GSS.divorce$family16))
+colnames(tab) <- c("status", "family16", "count")
+pie_21 <- ggplot(tab, aes(status, family16)) + 
+              geom_point(aes(size = count), colour = "green") + 
+              theme_bw() + xlab("Marital Status?") + ylab("Live with both parents at age 16?") + scale_size_continuous(range=c(3,15)) + theme(plot.title = element_text(size = 10), legend.position="none")  + coord_fixed(ratio = 1)
+
+tab <- as.data.frame(table(GSS.divorce$marital, GSS.divorce$famdif16))
+colnames(tab) <- c("status", "familyif16", "count")
+pie_1 <- ggplot(tab, aes(status, familyif16)) + 
+              geom_point(aes(size = count), colour = "green") + 
+              theme_bw() + xlab("Marital Status?") + ylab("If not with both parents, why?") + scale_size_continuous(range=c(3,15)) + theme(plot.title = element_text(size = 10), legend.position="none")  + coord_fixed(ratio = 1)
 
 ```
 

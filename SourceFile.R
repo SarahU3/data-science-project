@@ -47,10 +47,13 @@ var_list <- c("oversamp", "formwt", "wtssall", "sampcode", "sample", "id", "ball
           "year", "sexeduc", "region", "premarsx", "xmarsex", "pornlaw", "agewed", 
           "marital", "partyid", "hapmar", "denom", "fund", "childs", "degree",
           "age", "divorce", "widowed", "educ", "natdrug", "wrkstat", "spwrksta",
-          "polviews", "happy", "trust", "class", "income", "version")
-GSS.divorce$Agecat1<-cut(GSS.divorce$age, c(0,18,25,35,45,55,65,75,85,95))
+          "polviews", "happy", "trust", "class", "income", "version", "reg16", 
+          "family16", "famdif16", "born", "parborn", "income98", "size", "attend",
+          "relig16", "bible", "helpful", "fair", "consci", "satjob", "satfin", 
+          "abnomore", "absingle", "divlaw", "xmovie", "fefam")
 
 GSS.divorce <- GSS.complete[GSS.complete$year>=1990,var_list]
+GSS.divorce$Agecat1<-cut(GSS.divorce$age, c(0,18,25,35,45,55,65,75,85,95))
 
 # to free up RAM, remove the full r data frame
 rm( GSS.complete )
