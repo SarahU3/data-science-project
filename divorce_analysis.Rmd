@@ -25,6 +25,13 @@ GSS.divorce.na <- GSS.divorce
 GSS.divorce <- GSS.divorce[GSS.divorce$marital=="MARRIED" | GSS.divorce$marital=="DIVORCED" | GSS.divorce$marital=="SEPARATED", ]
 GSS.divorce
 GSS.divorce$marital <- factor(GSS.divorce$marital)
+
+GSS.divorce$marital2 <- "married"
+GSS.divorce$marital2 [GSS.divorce$marital == "SEPARATED"] <- "split"
+GSS.divorce$marital2 [GSS.divorce$marital == "DIVORCED"] <- "split"
+GSS.divorce$marital2 [is.na(GSS.divorce$marital) ==T] <- NA
+
+
 ```
 
 ### Step Two: Visually check distributions of variable responses
@@ -33,107 +40,316 @@ GSS.divorce$marital <- factor(GSS.divorce$marital)
 library(ggplot2)
 library(plyr)
 
+##Opinion on Premarital Sex 
+#Married vs Divorced vs Separated vs Other
 tab <- as.data.frame(table(GSS.divorce$marital, GSS.divorce$premarsx))
 colnames(tab) <- c("status", "premarital", "count")
-pie_1 <- ggplot(tab, aes(status, premarital)) + 
+pie_1a <- ggplot(tab, aes(status, premarital)) + 
               geom_point(aes(size = count), colour = "green") + 
               theme_bw() + xlab("Marital Status?") + ylab("Opinion on premarital sex?") + scale_size_continuous(range=c(3,15)) + theme(plot.title = element_text(size = 10), legend.position="none")  + coord_fixed(ratio = 1)
 
+tab <- as.data.frame(table(GSS.divorce$marital2, GSS.divorce$premarsx))
+colnames(tab) <- c("status", "premarital", "count")
+pie_1b <- ggplot(tab, aes(status, premarital)) + 
+              geom_point(aes(size = count), colour = "green") + 
+              theme_bw() + xlab("Marital Status?") + ylab("Opinion on premarital sex?") + scale_size_continuous(range=c(3,15)) + theme(plot.title = element_text(size = 10), legend.position="none")  + coord_fixed(ratio = 1)
+
+##Opinion on Pornography Laws
 tab <- as.data.frame(table(GSS.divorce$marital, GSS.divorce$pornlaw))
 colnames(tab) <- c("status", "porn", "count")
-pie_2 <- ggplot(tab, aes(status, porn)) + 
+pie_2a <- ggplot(tab, aes(status, porn)) + 
               geom_point(aes(size = count), colour = "green") + 
               theme_bw() + xlab("Marital Status?") + ylab("Opinion on pornography regulation?") + scale_size_continuous(range=c(3,15)) + theme(plot.title = element_text(size = 10), legend.position="none")  + coord_fixed(ratio = 1)
 
+tab <- as.data.frame(table(GSS.divorce$marital2, GSS.divorce$pornlaw))
+colnames(tab) <- c("status", "porn", "count")
+pie_2b <- ggplot(tab, aes(status, porn)) + 
+              geom_point(aes(size = count), colour = "green") + 
+              theme_bw() + xlab("Marital Status?") + ylab("Opinion on pornography regulation?") + scale_size_continuous(range=c(3,15)) + theme(plot.title = element_text(size = 10), legend.position="none")  + coord_fixed(ratio = 1)
+
+##Opinion on Extramarital Sex 
 tab <- as.data.frame(table(GSS.divorce$marital, GSS.divorce$xmarsex))
 colnames(tab) <- c("status", "exmar", "count")
-pie_3 <- ggplot(tab, aes(status, exmar)) + 
+pie_3a <- ggplot(tab, aes(status, exmar)) + 
               geom_point(aes(size = count), colour = "green") + 
               theme_bw() + xlab("Marital Status?") + ylab("Opinion on extramarital sex?") + scale_size_continuous(range=c(3,15)) + theme(plot.title = element_text(size = 10), legend.position="none")  + coord_fixed(ratio = 1)
 
+tab <- as.data.frame(table(GSS.divorce$marital2, GSS.divorce$xmarsex))
+colnames(tab) <- c("status", "exmar", "count")
+pie_3b <- ggplot(tab, aes(status, exmar)) + 
+              geom_point(aes(size = count), colour = "green") + 
+              theme_bw() + xlab("Marital Status?") + ylab("Opinion on extramarital sex?") + scale_size_continuous(range=c(3,15)) + theme(plot.title = element_text(size = 10), legend.position="none")  + coord_fixed(ratio = 1)
+
+##Party Identification 
 tab <- as.data.frame(table(GSS.divorce$marital, GSS.divorce$partyid))
 colnames(tab) <- c("status", "party", "count")
-pie_4 <- ggplot(tab, aes(status, party)) + 
+pie_4a <- ggplot(tab, aes(status, party)) + 
               geom_point(aes(size = count), colour = "green") + 
               theme_bw() + xlab("Marital Status?") + ylab("Party identification?") + scale_size_continuous(range=c(3,15)) + theme(plot.title = element_text(size = 10), legend.position="none")  + coord_fixed(ratio = 1)
 
+tab <- as.data.frame(table(GSS.divorce$marital2, GSS.divorce$partyid))
+colnames(tab) <- c("status", "party", "count")
+pie_4b <- ggplot(tab, aes(status, party)) + 
+              geom_point(aes(size = count), colour = "green") + 
+              theme_bw() + xlab("Marital Status?") + ylab("Party identification?") + scale_size_continuous(range=c(3,15)) + theme(plot.title = element_text(size = 10), legend.position="none")  + coord_fixed(ratio = 1)
+
+##How happy are you? 
 tab <- as.data.frame(table(GSS.divorce$marital, GSS.divorce$happy))
 colnames(tab) <- c("status", "happy", "count")
-pie_5 <- ggplot(tab, aes(status, happy)) + 
+pie_5a <- ggplot(tab, aes(status, happy)) + 
               geom_point(aes(size = count), colour = "green") + 
               theme_bw() + xlab("Marital Status?") + ylab("How happy are you?") + scale_size_continuous(range=c(3,15)) + theme(plot.title = element_text(size = 10), legend.position="none")  + coord_fixed(ratio = 1)
 
+tab <- as.data.frame(table(GSS.divorce$marital2, GSS.divorce$happy))
+colnames(tab) <- c("status", "happy", "count")
+pie_5b <- ggplot(tab, aes(status, happy)) + 
+              geom_point(aes(size = count), colour = "green") + 
+              theme_bw() + xlab("Marital Status?") + ylab("How happy are you?") + scale_size_continuous(range=c(3,15)) + theme(plot.title = element_text(size = 10), legend.position="none")  + coord_fixed(ratio = 1)
+
+##Fundamentalism of Religion 
 tab <- as.data.frame(table(GSS.divorce$marital, GSS.divorce$fund))
 colnames(tab) <- c("status", "fund", "count")
-pie_6 <- ggplot(tab, aes(status, fund)) + 
+pie_6a <- ggplot(tab, aes(status, fund)) + 
               geom_point(aes(size = count), colour = "green") + 
               theme_bw() + xlab("Marital Status?") + ylab("Fundamentalism of religion?") + scale_size_continuous(range=c(3,15)) + theme(plot.title = element_text(size = 10), legend.position="none")  + coord_fixed(ratio = 1)
 
+tab <- as.data.frame(table(GSS.divorce$marital2, GSS.divorce$fund))
+colnames(tab) <- c("status", "fund", "count")
+pie_6b <- ggplot(tab, aes(status, fund)) + 
+              geom_point(aes(size = count), colour = "green") + 
+              theme_bw() + xlab("Marital Status?") + ylab("Fundamentalism of religion?") + scale_size_continuous(range=c(3,15)) + theme(plot.title = element_text(size = 10), legend.position="none")  + coord_fixed(ratio = 1)
+
+##Self-Identified Class
 tab <- as.data.frame(table(GSS.divorce$marital, GSS.divorce$class))
 colnames(tab) <- c("status", "class", "count")
-pie_7 <- ggplot(tab, aes(status, class)) + 
+pie_7a <- ggplot(tab, aes(status, class)) + 
               geom_point(aes(size = count), colour = "green") + 
               theme_bw() + xlab("Marital Status?") + ylab("Self-identified class?") + scale_size_continuous(range=c(3,15)) + theme(plot.title = element_text(size = 10), legend.position="none")  + coord_fixed(ratio = 1)
 
+tab <- as.data.frame(table(GSS.divorce$marital2, GSS.divorce$class))
+colnames(tab) <- c("status", "class", "count")
+pie_7b <- ggplot(tab, aes(status, class)) + 
+              geom_point(aes(size = count), colour = "green") + 
+              theme_bw() + xlab("Marital Status?") + ylab("Self-identified class?") + scale_size_continuous(range=c(3,15)) + theme(plot.title = element_text(size = 10), legend.position="none")  + coord_fixed(ratio = 1)
+
+##Work Status
 tab <- as.data.frame(table(GSS.divorce$marital, GSS.divorce$wrkstat))
 colnames(tab) <- c("status", "work", "count")
-pie_8 <- ggplot(tab, aes(status, work)) + 
+pie_8a <- ggplot(tab, aes(status, work)) + 
               geom_point(aes(size = count), colour = "green") + 
               theme_bw() + xlab("Marital Status?") + ylab("Work status?") + scale_size_continuous(range=c(3,15)) + theme(plot.title = element_text(size = 10), legend.position="none")  + coord_fixed(ratio = 1)
 
+tab <- as.data.frame(table(GSS.divorce$marital2, GSS.divorce$wrkstat))
+colnames(tab) <- c("status", "work", "count")
+pie_8b <- ggplot(tab, aes(status, work)) + 
+              geom_point(aes(size = count), colour = "green") + 
+              theme_bw() + xlab("Marital Status?") + ylab("Work status?") + scale_size_continuous(range=c(3,15)) + theme(plot.title = element_text(size = 10), legend.position="none")  + coord_fixed(ratio = 1)
+
+
+##Years of Education 
 tab <- as.data.frame(table(GSS.divorce$marital, GSS.divorce$educ))
 colnames(tab) <- c("status", "edu", "count")
-pie_9 <- ggplot(tab, aes(status, edu)) + 
+pie_9a <- ggplot(tab, aes(status, edu)) + 
               geom_point(aes(size = count), colour = "green") + 
               theme_bw() + xlab("Marital Status?") + ylab("Years of education?") + scale_size_continuous(range=c(3,15)) + theme(plot.title = element_text(size = 10), legend.position="none")  + coord_fixed(ratio = 1)
 
+tab <- as.data.frame(table(GSS.divorce$marital2, GSS.divorce$educ))
+colnames(tab) <- c("status", "edu", "count")
+pie_9b <- ggplot(tab, aes(status, edu)) + 
+              geom_point(aes(size = count), colour = "green") + 
+              theme_bw() + xlab("Marital Status?") + ylab("Years of education?") + scale_size_continuous(range=c(3,15)) + theme(plot.title = element_text(size = 10), legend.position="none")  + coord_fixed(ratio = 1)
+
+      ###Histogram
+        EducGraph2 <- ggplot(GSS.divorce, aes(x= educ,  group=marital2)) + 
+            geom_bar(aes(y = ..prop.., fill = factor(..x..)), stat="count") +
+            geom_text(aes( label = scales::percent(..prop..),
+                           y= ..prop.. ), stat= "count", vjust = -.5) +
+            labs(y = "Percent", fill="educ") +
+            facet_grid(~marital2) +
+            scale_y_continuous(labels = scales::percent)
+
+##Children 
 tab <- as.data.frame(table(GSS.divorce$marital, GSS.divorce$childs))
 colnames(tab) <- c("status", "child", "count")
-pie_10 <- ggplot(tab, aes(status, child)) + 
+pie_10a <- ggplot(tab, aes(status, child)) + 
               geom_point(aes(size = count), colour = "green") + 
               theme_bw() + xlab("Marital Status?") + ylab("Children?") + scale_size_continuous(range=c(3,15)) + theme(plot.title = element_text(size = 10), legend.position="none")  + coord_fixed(ratio = 1)
 
+tab <- as.data.frame(table(GSS.divorce$marital2, GSS.divorce$childs))
+colnames(tab) <- c("status", "child", "count")
+pie_10b <- ggplot(tab, aes(status, child)) + 
+              geom_point(aes(size = count), colour = "green") + 
+              theme_bw() + xlab("Marital Status?") + ylab("Children?") + scale_size_continuous(range=c(3,15)) + theme(plot.title = element_text(size = 10), legend.position="none")  + coord_fixed(ratio = 1)
+
+
+#Sex Education in Schools
 tab <- as.data.frame(table(GSS.divorce$marital, GSS.divorce$sexeduc))
 colnames(tab) <- c("status", "sexed", "count")
-pie_11 <- ggplot(tab, aes(status, sexed)) + 
+pie_11a <- ggplot(tab, aes(status, sexed)) + 
               geom_point(aes(size = count), colour = "green") + 
               theme_bw() + xlab("Marital Status?") + ylab("Sex education in schools?") + scale_size_continuous(range=c(3,15)) + theme(plot.title = element_text(size = 10), legend.position="none")  + coord_fixed(ratio = 1)
 
+tab <- as.data.frame(table(GSS.divorce$marital2, GSS.divorce$sexeduc))
+colnames(tab) <- c("status", "sexed", "count")
+pie_11b <- ggplot(tab, aes(status, sexed)) + 
+              geom_point(aes(size = count), colour = "green") + 
+              theme_bw() + xlab("Marital Status?") + ylab("Sex education in schools?") + scale_size_continuous(range=c(3,15)) + theme(plot.title = element_text(size = 10), legend.position="none")  + coord_fixed(ratio = 1)
+
+       SexEducGraph2 <- ggplot(GSS.divorce, aes(x= sexeduc,  group=marital2)) + 
+                  geom_bar(aes(y = ..prop.., fill = factor(..x..)), stat="count") +
+                  geom_text(aes( label = scales::percent(..prop..),
+                                 y= ..prop.. ), stat= "count", vjust = -.5) +
+                  labs(y = "Percent", fill="sexeduc") +
+                  facet_grid(~marital2) +
+                  scale_y_continuous(labels = scales::percent)
+
+##Region 
 tab <- as.data.frame(table(GSS.divorce$marital, GSS.divorce$region))
 colnames(tab) <- c("status", "region", "count")
-pie_12 <- ggplot(tab, aes(status, region)) + 
+pie_12a <- ggplot(tab, aes(status, region)) + 
               geom_point(aes(size = count), colour = "green") + 
               theme_bw() + xlab("Marital Status?") + ylab("Region?") + scale_size_continuous(range=c(3,15)) + theme(plot.title = element_text(size = 10), legend.position="none")  + coord_fixed(ratio = 1)
 
+tab <- as.data.frame(table(GSS.divorce$marital2, GSS.divorce$region))
+colnames(tab) <- c("status", "region", "count")
+pie_12b <- ggplot(tab, aes(status, region)) + 
+              geom_point(aes(size = count), colour = "green") + 
+              theme_bw() + xlab("Marital Status?") + ylab("Region?") + scale_size_continuous(range=c(3,15)) + theme(plot.title = element_text(size = 10), legend.position="none")  + coord_fixed(ratio = 1)
+
+##Can people be trusted? 
 tab <- as.data.frame(table(GSS.divorce$marital, GSS.divorce$trust))
 colnames(tab) <- c("status", "trust", "count")
-pie_13 <- ggplot(tab, aes(status, trust)) + 
+pie_13a <- ggplot(tab, aes(status, trust)) + 
               geom_point(aes(size = count), colour = "green") + 
               theme_bw() + xlab("Marital Status?") + ylab("Can people be trusted?") + scale_size_continuous(range=c(3,15)) + theme(plot.title = element_text(size = 10), legend.position="none")  + coord_fixed(ratio = 1)
 
+tab <- as.data.frame(table(GSS.divorce$marital2, GSS.divorce$trust))
+colnames(tab) <- c("status", "trust", "count")
+pie_13b <- ggplot(tab, aes(status, trust)) + 
+              geom_point(aes(size = count), colour = "green") + 
+              theme_bw() + xlab("Marital Status?") + ylab("Can people be trusted?") + scale_size_continuous(range=c(3,15)) + theme(plot.title = element_text(size = 10), legend.position="none")  + coord_fixed(ratio = 1)
+
+      TrustGraph2 <- ggplot(GSS.divorce, aes(x= trust,  group=marital2)) + 
+                        geom_bar(aes(y = ..prop.., fill = factor(..x..)), stat="count") +
+                        geom_text(aes( label = scales::percent(..prop..),
+                                       y= ..prop.. ), stat= "count", vjust = -.5) +
+                        labs(y = "Percent", fill="trust") +
+                        facet_grid(~marital2) +
+                        scale_y_continuous(labels = scales::percent)
+
+##Region at age 16
 tab <- as.data.frame(table(GSS.divorce$marital, GSS.divorce$reg16))
 colnames(tab) <- c("status", "region16", "count")
-pie_20 <- ggplot(tab, aes(status, region16)) + 
+pie_20a <- ggplot(tab, aes(status, region16)) + 
               geom_point(aes(size = count), colour = "green") + 
               theme_bw() + xlab("Marital Status?") + ylab("Region at age 16?") + scale_size_continuous(range=c(3,15)) + theme(plot.title = element_text(size = 10), legend.position="none")  + coord_fixed(ratio = 1)
 
+tab <- as.data.frame(table(GSS.divorce$marital2, GSS.divorce$reg16))
+colnames(tab) <- c("status", "region16", "count")
+pie_20b <- ggplot(tab, aes(status, region16)) + 
+              geom_point(aes(size = count), colour = "green") + 
+              theme_bw() + xlab("Marital Status?") + ylab("Region at age 16?") + scale_size_continuous(range=c(3,15)) + theme(plot.title = element_text(size = 10), legend.position="none")  + coord_fixed(ratio = 1)
+
+
+##Live with both parents at age 16
 tab <- as.data.frame(table(GSS.divorce$marital, GSS.divorce$family16))
 colnames(tab) <- c("status", "family16", "count")
-pie_21 <- ggplot(tab, aes(status, family16)) + 
+pie_21a <- ggplot(tab, aes(status, family16)) + 
               geom_point(aes(size = count), colour = "green") + 
               theme_bw() + xlab("Marital Status?") + ylab("Live with both parents at age 16?") + scale_size_continuous(range=c(3,15)) + theme(plot.title = element_text(size = 10), legend.position="none")  + coord_fixed(ratio = 1)
 
+tab <- as.data.frame(table(GSS.divorce$marital2, GSS.divorce$family16))
+colnames(tab) <- c("status", "family16", "count")
+pie_21b <- ggplot(tab, aes(status, family16)) + 
+              geom_point(aes(size = count), colour = "green") + 
+              theme_bw() + xlab("Marital Status?") + ylab("Live with both parents at age 16?") + scale_size_continuous(range=c(3,15)) + theme(plot.title = element_text(size = 10), legend.position="none")  + coord_fixed(ratio = 1)
+
+
+##If not with parents, why?
 tab <- as.data.frame(table(GSS.divorce$marital, GSS.divorce$famdif16))
 colnames(tab) <- c("status", "familyif16", "count")
 pie_1 <- ggplot(tab, aes(status, familyif16)) + 
               geom_point(aes(size = count), colour = "green") + 
               theme_bw() + xlab("Marital Status?") + ylab("If not with both parents, why?") + scale_size_continuous(range=c(3,15)) + theme(plot.title = element_text(size = 10), legend.position="none")  + coord_fixed(ratio = 1)
 
+        ParentsGraph2 <- ggplot(GSS.divorce, aes(x= famdif16,  group=marital2)) + 
+                                geom_bar(aes(y = ..prop.., fill = factor(..x..)), stat="count") +
+                                geom_text(aes( label = scales::percent(..prop..),
+                                               y= ..prop.. ), stat= "count", vjust = -.5) +
+                                labs(y = "Percent", fill="family") +
+                                facet_grid(~marital2) +
+                                scale_y_continuous(labels = scales::percent)
+
+#### Experimenting with Plotting Relative Percentages 
+GSS.divorce$class2 <- "blank"
+GSS.divorce$class2 [GSS.divorce$class == "NO CLASS"] <- "NO CLASS"
+GSS.divorce$class2 [GSS.divorce$class == "UPPER CLASS"] <- "UPPER CLASS"
+GSS.divorce$class2 [GSS.divorce$class == "MIDDLE CLASS"] <- "MIDDLE CLASS"
+GSS.divorce$class2 [GSS.divorce$class == "WORKING CLASS"] <- "WORKING CLASS"
+GSS.divorce$class2 [GSS.divorce$class == "LOWER CLASS"] <- "LOWER CLASS"
+GSS.divorce$class2 [is.na(GSS.divorce$class) ==T] <- NA
+
+ClassGraph <- ggplot(GSS.divorce, aes(class2, group = marital2)) + 
+          geom_bar(aes(y = ..prop.., fill = factor(..x..)), stat="count") + 
+          scale_y_continuous(labels=scales::percent) +
+          ylab("relative frequencies") +
+          facet_grid(~marital2)
+
+ClassGraphPerc <- ggplot(GSS.divorce, aes(x= class2,  group=marital2)) + 
+    geom_bar(aes(y = ..prop.., fill = factor(..x..)), stat="count") +
+    geom_text(aes( label = scales::percent(..prop..),
+                   y= ..prop.. ), stat= "count", vjust = -.5) +
+    labs(y = "Percent", fill="class2") +
+    facet_grid(~marital2) +
+    scale_y_continuous(labels = scales::percent)
+
+ClassGraph2 <- ggplot(GSS.divorce, aes(x= class,  group=marital2)) + 
+    geom_bar(aes(y = ..prop.., fill = factor(..x..)), stat="count") +
+    geom_text(aes( label = scales::percent(..prop..),
+                   y= ..prop.. ), stat= "count", vjust = -.5) +
+    labs(y = "Percent", fill="class") +
+    facet_grid(~marital2) +
+    scale_y_continuous(labels = scales::percent)
+## http://www.r-graph-gallery.com/48-grouped-barplot-with-ggplot2/
 ```
 
 ### Step Three: Try regression, decision trees, random forest, clustering
 
 ``` {r }
+## Separating data in to a 70-15-15 split 
 
+# Input 1. The data frame that we want to split into training, validation, and test.
+df <- GSS.divorce
+
+# Input 2. Set the fractions of the dataframe to split into training, validation, and test.
+fractionTraining   <- 0.70
+fractionValidation <- 0.15
+fractionTest       <- 0.15
+
+# Compute sample sizes.
+sampleSizeTraining   <- floor(fractionTraining   * nrow(df))
+sampleSizeValidation <- floor(fractionValidation * nrow(df))
+sampleSizeTest       <- floor(fractionTest       * nrow(df))
+
+# Create the randomly-sampled indices for the dataframe. Use setdiff() to avoid overlapping subsets of indices.
+indicesTraining    <- sort(sample(seq_len(nrow(df)), size=sampleSizeTraining))
+indicesNotTraining <- setdiff(seq_len(nrow(df)), indicesTraining)
+indicesValidation  <- sort(sample(indicesNotTraining, size=sampleSizeValidation))
+indicesTest        <- setdiff(indicesNotTraining, indicesValidation)
+
+# Finally, output the three dataframes for training, validation and test.
+dfTraining   <- df[indicesTraining, ]
+dfValidation <- df[indicesValidation, ]
+dfTest       <- df[indicesTest, ]
+  
+##http://stackoverflow.com/questions/36068963/r-how-to-split-a-data-frame-into-training-validation-and-test-sets?noredirect=1&lq=1
+
+###Logistic Regression 
+#glm(marital2 ~ <x>, data = <data>, family = binomial())
+fit <- glm(marital ~ ., family=binomial(link='logit'),data=dfTraining) 
+#data = dfTraining, family = binomial())
+summary(glm.fit)
+
+  
 
 ```
