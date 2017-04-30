@@ -347,13 +347,21 @@ testC <- GSS.C[rand<0.15,]
 
 
 # Step Four: Analysis, logistic regression
-``` {r}
+``` {r logit}
 ###Logistic Regression 
 #glm(marital2 ~ <x>, data = <data>, family = binomial())
-fitA <- glm(marital2 ~ , family=binomial(link='logit'),data=trainA) 
+fitA <- glm(marital2 ~ year + sexeduc + region + premarsx + xmarsex + partyid + fund + childs + degree + Agecat1 + widowed + wrkstat + polviews + happy + class + income98 + reg16 + family16 + born + parborn + size + attend + relig16 + bible + satfin + abnomore + absingle + divlaw + fefam, family=binomial(link='logit'),data=trainA) 
 #data = dfTraining, family = binomial())
-summary(glm.fit)
+summary(fitA)
 
   
 
 ```
+
+# Step Five: Analysis, decision trees
+``` {r trees}
+
+
+
+```
+
