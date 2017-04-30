@@ -17,11 +17,7 @@ load("GSSdivorce.rda")
 ```{r missing, echo=FALSE}
 #remove sphrs2, agewed, martype
 GSS.divorce.na <- GSS.divorce
-#var_list <- c("oversamp", "formwt", "wtssall", "sampcode", "sample", "id", "ballot", 
-          #"year", "sexeduc", "region", "premarsx", "xmarsex", "pornlaw", "marital", 
-          #"partyid", "hapmar", "denom", "fund", "childs", "age", "educ", "wrkstat", 
-          #"spwrksta", "polviews", "happy", "trust", "class", "income", "version")
-GSS.divorce <- GSS.divorce.na[GSS.divorce$year>=1996,var_list]
+GSS.divorce <- GSS.divorce.na[GSS.divorce$year>=1996, ]
 GSS.divorce <- GSS.divorce[GSS.divorce$marital=="MARRIED" | GSS.divorce$marital=="DIVORCED" | GSS.divorce$marital=="SEPARATED", ]
 GSS.divorce
 GSS.divorce$marital <- factor(GSS.divorce$marital)
@@ -315,7 +311,7 @@ ClassGraph2 <- ggplot(GSSnew, aes(x= class,  group=marital2)) +
 ## http://www.r-graph-gallery.com/48-grouped-barplot-with-ggplot2/
 ```
 
-### Step Three: Try regression, decision trees, random forest, clustering
+### Step Three: Split data by ballot and into train-validate-test groups
 
 ``` {r }
 ## Separate GSSnew by ballot type A, B or C
@@ -324,38 +320,37 @@ GSS.A <- subset(GSSnew, (GSSnew$version==1|GSSnew$version==4))
 GSS.B <- subset(GSSnew, (GSSnew$version==2|GSSnew$version==5))
 GSS.C <- subset(GSSnew, (GSSnew$version==3|GSSnew$version==6))
 
+## Train-validate-test split for GSS Ballot A
+set.seed(567)
+rand <- runif(nrow(GSS.A))
 
-## Separating data in to a 70-15-15 split 
+trainA <- GSS.A[rand>0.3,]
+validA <- GSS.A[rand>0.15 & rand <0.3,]
+testA <- GSS.A[rand<0.15,]
 
-# Input 1. The data frame that we want to split into training, validation, and test.
-df <- GSSnew
+## Train-validate-test split for GSS Ballot B
+set.seed(678)
+rand <- runif(nrow(GSS.B))
 
-# Input 2. Set the fractions of the dataframe to split into training, validation, and test.
-fractionTraining   <- 0.70
-fractionValidation <- 0.15
-fractionTest       <- 0.15
+trainB <- GSS.B[rand>0.3,]
+validB <- GSS.B[rand>0.15 & rand <0.3,]
+testB <- GSS.B[rand<0.15,]
 
-# Compute sample sizes.
-sampleSizeTraining   <- floor(fractionTraining   * nrow(df))
-sampleSizeValidation <- floor(fractionValidation * nrow(df))
-sampleSizeTest       <- floor(fractionTest       * nrow(df))
+## Train-validate-test split for GSS Ballot B
+set.seed(789)
+rand <- runif(nrow(GSS.C))
 
-# Create the randomly-sampled indices for the dataframe. Use setdiff() to avoid overlapping subsets of indices.
-indicesTraining    <- sort(sample(seq_len(nrow(df)), size=sampleSizeTraining))
-indicesNotTraining <- setdiff(seq_len(nrow(df)), indicesTraining)
-indicesValidation  <- sort(sample(indicesNotTraining, size=sampleSizeValidation))
-indicesTest        <- setdiff(indicesNotTraining, indicesValidation)
+trainC <- GSS.C[rand>0.3,]
+validC <- GSS.C[rand>0.15 & rand <0.3,]
+testC <- GSS.C[rand<0.15,]
+```
 
-# Finally, output the three dataframes for training, validation and test.
-dfTraining   <- df[indicesTraining, ]
-dfValidation <- df[indicesValidation, ]
-dfTest       <- df[indicesTest, ]
-  
-##http://stackoverflow.com/questions/36068963/r-how-to-split-a-data-frame-into-training-validation-and-test-sets?noredirect=1&lq=1
 
+# Step Four: Analysis, logistic regression
+``` {r}
 ###Logistic Regression 
 #glm(marital2 ~ <x>, data = <data>, family = binomial())
-fit <- glm(marital ~ ., family=binomial(link='logit'),data=dfTraining) 
+fitA <- glm(marital2 ~ , family=binomial(link='logit'),data=trainA) 
 #data = dfTraining, family = binomial())
 summary(glm.fit)
 
