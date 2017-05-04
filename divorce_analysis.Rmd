@@ -350,16 +350,102 @@ testC <- GSS.C[rand<0.15,]
 ``` {r logit}
 ###Logistic Regression 
 #glm(marital2 ~ <x>, data = <data>, family = binomial())
+#TrainA
 fitA <- glm(marital2 ~ year + sexeduc + region + premarsx + xmarsex + partyid + fund + childs + degree + Agecat1 + widowed + wrkstat + polviews + happy + class + income98 + reg16 + family16 + born + parborn + size + attend + relig16 + bible + satfin + abnomore + absingle + divlaw + fefam, family=binomial(link='logit'),data=trainA) 
 #data = dfTraining, family = binomial())
 summary(fitA)
+#TrainB
+fitB <- glm(marital2 ~ year + sexeduc + region + premarsx + xmarsex + partyid + fund + childs + degree + Agecat1 + widowed + wrkstat + polviews + happy + class + income98 + reg16 + family16 + born + parborn + size + attend + relig16 + bible + satfin + abnomore + absingle + divlaw + fefam, family=binomial(link='logit'),data=trainB) 
+summary(fitB)
+#TrainC
+fitC <- glm(marital2 ~ year + sexeduc + region + premarsx + xmarsex + partyid + fund + childs + degree + Agecat1 + widowed + wrkstat + polviews + happy + class + income98 + reg16 + family16 + born + parborn + size + attend + relig16 + bible + satfin + abnomore + absingle + divlaw + fefam, family=binomial(link='logit'),data=trainC) 
 
-  
+#issues with marital2 being only 1 value --> create a factor variable rather than character (0 = married, 1 = divorced/split?)
 
 ```
 
 # Step Five: Analysis, decision trees
 ``` {r trees}
+
+###Decision Trees 
+
+#Ballot A
+
+rtree_fitA <-rpart(marital2 ~ year + sexeduc + region + premarsx + xmarsex + partyid + fund + childs + degree + Agecat1 + widowed + wrkstat + polviews + happy + class + income98 + reg16 + family16 + born + parborn + size + attend + relig16 + bible + satfin + abnomore + absingle + divlaw + fefam, data = trainA, method = 'class')
+plot(rtree_fitA)   ##not sure why this doesn't work? 
+
+trainApred <- predict(rtree_fitA, trainA, type = 'class')
+table(trainApred, trainA$marital2)
+##Accuracy: (2564 + 282)/(2564+282 + 865 + 198)
+###Accuracy: 72.81% 
+
+#Ballot B
+rtree_fitB <-rpart(marital2 ~ year + sexeduc + region + premarsx + xmarsex + partyid + fund + childs + degree + Agecat1 + widowed + wrkstat + polviews + happy + class + income98 + reg16 + family16 + born + parborn + size + attend + relig16 + bible + satfin + abnomore + absingle + divlaw + fefam, data = trainB, method = 'class')
+
+trainBpred <- predict(rtree_fitB, trainB, type = 'class')
+table(trainBpred, trainB$marital2)
+##Accuracy: (2668+254)/(2668+254+902+153)
+###Accuracy: 73.47% 
+
+#Ballot C
+rtree_fitC <-rpart(marital2 ~ year + sexeduc + region + premarsx + xmarsex + partyid + fund + childs + degree + Agecat1 + widowed + wrkstat + polviews + happy + class + income98 + reg16 + family16 + born + parborn + size + attend + relig16 + bible + satfin + abnomore + absingle + divlaw + fefam, data = trainC, method = 'class')
+
+trainCpred <- predict(rtree_fitC, trainC, type = 'class')
+table(trainCpred, trainC$marital2)
+
+##Accuracy: (2627 + 383)/(2627+383+775+216)
+###Accuracy: 75.23% 
+
+##Source: https://www.r-bloggers.com/using-decision-trees-to-predict-infant-birth-weights/
+
+```
+
+```{r}
+###Extra: Bagging 
+#TrainA
+fitA2 <- lm(marital2 ~ year + sexeduc + region + premarsx + xmarsex + partyid + fund + childs + degree + Agecat1 + widowed + wrkstat + polviews + happy + class + income98 + reg16 + family16 + born + parborn + size + attend + relig16 + bible + satfin + abnomore + absingle + divlaw + fefam, data = trainA)
+summary(fitA2)
+preds <- predict(fit, testdf[,predictorNames], se.fit = TRUE)
+length_divisor <-4
+bagging<-function(trainA,testA,length_divisor=4,iterations=100000)
+{predictA<-foreach(m=1:iterations,.combine=cbind) %do% {training_positionsA <- sample(nrow(trainA), size=floor((nrow(trainA)/length_divisor)))
+train_posA<-1:nrow(trainA) %in% training_positionsA
+lm_fitA<-lm(marital2~year + sexeduc + region + premarsx + xmarsex + partyid + fund + childs + degree + Agecat1 + widowed + wrkstat + polviews + happy + class + income98 + reg16 + family16 + born + parborn + size + attend + relig16 + bible + satfin + abnomore + absingle + divlaw + fefam,data=trainA)
+predict(lm_fitA,newdata=testA)}
+rowMeans(predictA)
+}
+
+
+install.packages ("pROC")
+library(pROC)
+ 
+# parallel    
+library(foreach)
+library(doParallel)
+
+#setup parallel back end to use 8 processors
+cl<-makeCluster(8)
+registerDoParallel(cl)
+
+# divide row size by 20, sample data 400 times 
+droplevels(trainA)
+
+length_divisor <- 20
+predictA<-foreach(m=1:400,.combine=cbind) %dopar% { 
+        # using sample function without seed
+     sampleRows <- sample(nrow(trainA), size=floor((nrow(trainA)/length_divisor)))
+     fit <- lm(marital2~year + sexeduc + region + premarsx + xmarsex + partyid + fund + childs + degree + Agecat1 + widowed + wrkstat + polviews + happy + class + income98 + reg16 + family16 + born + parborn + size + attend + relig16 + bible + satfin + abnomore + absingle + divlaw + fefam, data = trainA[sampleRows,])
+     droplevels(testA)
+     predictA <- data.frame(predict(object=fit, testA, se.fit = TRUE)[[1]])
+} 
+stopCluster(cl)
+
+library(pROC)
+auc(testdf[,outcomeName], rowMeans(predictions))
+
+
+
+
 
 
 
