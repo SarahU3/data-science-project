@@ -355,9 +355,9 @@ summary(fitA)
 
 # Step Six: Analysis, clusters
 ```{r clusters}
-clusters.vars.A <- c("year", "sexeduc", "region", "premarsx", "xmarsex", "partyid", "fund", "childs",  "degree", "Agecat1", "widowed", "educ", "wrkstat", "polviews", "happy", "trust", "class",    "reg16", "family16", "famdif16", "born", "parborn", "income98", "size", "attend", "relig16", "bible",    "satfin", "abnomore", "absingle", "divlaw", "fefam", "marital2")
+clusters.vars.A <- c("year", "sexeduc", "region", "premarsx", "xmarsex", "partyid", "fund", "childs",  "degree", "Agecat1", "widowed", "educ", "wrkstat", "polviews", "happy", "trust", "class",    "reg16", "family16", "born", "parborn", "income91", "size", "attend", "relig16", "bible", "satfin", "abnomore", "absingle", "divlaw", "fefam", "marital2")
 clusters.train.a <- trainA[,clusters.vars.A]
-
+clusters.train.a <- clusters.train.a[complete.cases(clusters.train.a),]
 dist.mat.A <- dist(clusters.train.a, method = "euclidean")
 clusters.a <- hclust(dist.mat.A)
 tree.a <- cutree(clusters.a, k=2)
