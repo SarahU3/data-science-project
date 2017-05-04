@@ -37,23 +37,27 @@ head(GSS.complete)
 # id 
 # ballot 
 # year 
-## variables of interest:
-# sexeduc region premarsx xmarsex pornlaw partyid hapmar denom fund childs 
-# age marital divorce widowed educ natdrug spwrksta sphrs2 polviews happy trust 
-# class income 
-
 
 var_list <- c("oversamp", "formwt", "wtssall", "sampcode", "sample", "id", "ballot", 
           "year", "sexeduc", "region", "premarsx", "xmarsex", "pornlaw", "agewed", 
           "marital", "partyid", "hapmar", "denom", "fund", "childs", "degree",
           "age", "divorce", "widowed", "educ", "natdrug", "wrkstat", "spwrksta",
           "polviews", "happy", "trust", "class", "income", "version", "reg16", 
-          "family16", "famdif16", "born", "parborn", "income98", "size", "attend",
+          "family16", "famdif16", "born", "parborn", "income91", "size", "attend",
           "relig16", "bible", "helpful", "fair", "consci", "satjob", "satfin", 
           "abnomore", "absingle", "divlaw", "xmovie", "fefam")
 
-GSS.divorce <- GSS.complete[GSS.complete$year>=1990,var_list]
+GSS.divorce <- GSS.complete[GSS.complete$year>=1996,var_list]
 GSS.divorce$Agecat1<-cut(GSS.divorce$age, c(0,18,25,35,45,55,65,75,85,95))
+GSS.divorce <- GSS.divorce[GSS.divorce$marital=="MARRIED" | GSS.divorce$marital=="DIVORCED" | GSS.divorce$marital=="SEPARATED", ]
+GSS.divorce$marital <- factor(GSS.divorce$marital)
+GSS.divorce$marital2 <- "married"
+GSS.divorce$marital2 [GSS.divorce$marital == "SEPARATED"] <- "split"
+GSS.divorce$marital2 [GSS.divorce$marital == "DIVORCED"] <- "split"
+GSS.divorce$marital2 [is.na(GSS.divorce$marital) ==T] <- NA
+GSS.divorce$marital2 <- factor(GSS.divorce$marital2)
+GSSnew <- GSS.divorce[!is.na(GSS.divorce$marital2),]
+summary(GSSnew$marital2)
 
 # to free up RAM, remove the full r data frame
 rm( GSS.complete )
