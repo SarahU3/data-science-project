@@ -313,7 +313,7 @@ ClassGraph2 <- ggplot(GSSnew, aes(x= class,  group=marital2)) +
 
 ### Step Three: Split data by ballot and into train-validate-test groups
 
-``` {r }
+``` {r splits}
 ## Separate GSSnew by ballot type A, B or C
 
 GSS.A <- subset(GSSnew, (GSSnew$version==1|GSSnew$version==4))
@@ -365,3 +365,25 @@ summary(fitA)
 
 ```
 
+# Step Six: Analysis, clusters
+```{r clusters}
+clusters.vars.A <- c("year", "sexeduc", "region", "premarsx", "xmarsex", "partyid", "fund", "childs",  "degree", "Agecat1", "widowed", "educ", "wrkstat", "polviews", "happy", "trust", "class",    "reg16", "family16", "famdif16", "born", "parborn", "income98", "size", "attend", "relig16", "bible",    "satfin", "abnomore", "absingle", "divlaw", "fefam", "marital2")
+clusters.train.a <- trainA[,clusters.vars.A]
+
+dist.mat.A <- dist(clusters.train.a, method = "euclidean")
+clusters.a <- hclust(dist.mat.A)
+tree.a <- cutree(clusters.a, k=2)
+table(tree.a)
+plot(cut(as.dendrogram(clusters.a), h=2000)$upper, leaflab="none")
+dist.mat.A2 <- dist(clusters.train.a, method = "manhattan")
+clusters.a2 <- hclust(dist.mat.A2)
+tree.a2 <- cutree(clusters.a2, k=2)
+table(tree.a2)
+plot(cut(as.dendrogram(clusters.a2), h=2000)$upper, leaflab="none")
+dist.mat.A3 <- dist(clusters.train.a, method = "maximum")
+clusters.a3 <- hclust(dist.mat.A3)
+tree.a3 <- cutree(clusters.a3, k=2)
+table(tree.a3)
+plot(cut(as.dendrogram(clusters.a3), h=0)$upper, leaflab="none")
+
+```
