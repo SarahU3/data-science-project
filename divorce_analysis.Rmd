@@ -15,8 +15,20 @@ load("GSSdivorce.rda")
 
 ### Step One: Check for missing data
 ```{r missing, echo=FALSE}
+#remove sphrs2, agewed, martype
+GSS.divorce.na <- GSS.divorce
+GSS.divorce <- GSS.divorce.na[GSS.divorce$year>=1996, ]
+GSS.divorce <- GSS.divorce[GSS.divorce$marital=="MARRIED" | GSS.divorce$marital=="DIVORCED" | GSS.divorce$marital=="SEPARATED", ]
+GSS.divorce
+GSS.divorce$marital <- factor(GSS.divorce$marital)
 
-
+GSS.divorce$marital2 <- "married"
+GSS.divorce$marital2 [GSS.divorce$marital == "SEPARATED"] <- "split"
+GSS.divorce$marital2 [GSS.divorce$marital == "DIVORCED"] <- "split"
+GSS.divorce$marital2 [is.na(GSS.divorce$marital) ==T] <- NA
+GSS.divorce$marital2 <- factor(GSS.divorce$marital2)
+GSSnew <- GSS.divorce[!is.na(GSS.divorce$marital2),]
+summary(GSSnew$marital2)
 
 ```
 
