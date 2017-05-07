@@ -1,25 +1,26 @@
 ---
 title: "Divorce Analysis"
-author: "SU"
-date: "April 15, 2017"
-output: html_document
----
+author: "Celeste Chen and Sarah Unbehaun"
+date: "May 8, 2017"
+output:
+  pdf_document: default
+  ---
 
 ```{r setup, include=FALSE}
 knitr::opts_chunk$set(echo = TRUE)
+library(ggplot2)
+library(gridExtra)
 ```
 
 ```{r data, include=FALSE}
 load("GSSdivorce.rda")
 ```
 
-### Step One: Check for missing data
-```{r missing, echo=FALSE}
-#remove sphrs2, agewed, martype
-GSS.divorce.na <- GSS.divorce
-GSS.divorce <- GSS.divorce.na[GSS.divorce$year>=1996, ]
+### Step One: Explore and Modify Data
+```{r missing, include=FALSE}
+#Restrict 
+GSS.divorce <- GSS.divorce[GSS.divorce$year>=1996, ]
 GSS.divorce <- GSS.divorce[GSS.divorce$marital=="MARRIED" | GSS.divorce$marital=="DIVORCED" | GSS.divorce$marital=="SEPARATED", ]
-GSS.divorce
 GSS.divorce$marital <- factor(GSS.divorce$marital)
 
 GSS.divorce$marital2 <- "married"
@@ -29,7 +30,13 @@ GSS.divorce$marital2 [is.na(GSS.divorce$marital) ==T] <- NA
 GSS.divorce$marital2 <- factor(GSS.divorce$marital2)
 GSSnew <- GSS.divorce[!is.na(GSS.divorce$marital2),]
 summary(GSSnew$marital2)
-
+GSSnew$sizecat <- NA
+GSSnew$sizecat [GSSnew$size < 10] <- "rural"
+GSSnew$sizecat [GSSnew$size >=10 & GSSnew$size <= 99] <- "small"
+GSSnew$sizecat [GSSnew$size >=100 & GSSnew$size <= 999] <- "medium"
+GSSnew$sizecat [GSSnew$size >=1000 & GSSnew$size <= 9999] <- "large"
+GSSnew$sizecat <- factor(GSSnew$sizecat)
+GSSnew$educcat <-cut(GSSnew$educ, seq(0,20,4))
 ```
 
 ### Step Two: Visually check distributions of variable responses
@@ -313,10 +320,13 @@ ClassGraph2 <- ggplot(GSSnew, aes(x= class,  group=marital2)) +
 
 ### Step Three: Split data by ballot and into train-validate-test groups
 
-``` {r splits}
+``` {r splits, include=FALSE, cache=TRUE }
 ## Separate GSSnew by ballot type A, B or C
 
 GSS.A <- subset(GSSnew, (GSSnew$version==1|GSSnew$version==4))
+clusters.vars.A <- c("year", "sexeduc", "region", "premarsx", "xmarsex", "partyid", "fund", "childs",  "degree", "Agecat1", "widowed", "wrkstat", "polviews", "happy", "class",  "reg16", "family16", "born", "parborn", "income", "sizecat", "attend", "relig16", "bible", "satjob", "satfin", "abnomore", "absingle", "divlaw", "marital2")
+GSS.A <- GSS.A[,clusters.vars.A]
+GSS.A <- GSS.A[complete.cases(GSS.A),]
 GSS.B <- subset(GSSnew, (GSSnew$version==2|GSSnew$version==5))
 GSS.C <- subset(GSSnew, (GSSnew$version==3|GSSnew$version==6))
 
@@ -346,52 +356,156 @@ testC <- GSS.C[rand<0.15,]
 ```
 
 
-# Step Four: Analysis, logistic regression
-``` {r logit}
+### Step Four: Analysis, logistic regression
+``` {r logit, include=FALSE, cache=TRUE}
 ###Logistic Regression 
 #glm(marital2 ~ <x>, data = <data>, family = binomial())
-fitA <- glm(marital2 ~ year + sexeduc + region + premarsx + xmarsex + partyid + fund + childs + degree + Agecat1 + widowed + wrkstat + polviews + happy + class + income98 + reg16 + family16 + born + parborn + size + attend + relig16 + bible + satfin + abnomore + absingle + divlaw + fefam, family=binomial(link='logit'),data=trainA) 
-#data = dfTraining, family = binomial())
+fitA <- glm(marital2 ~ year + sexeduc + region + premarsx + xmarsex + partyid + fund + childs + degree + Agecat1 + widowed + wrkstat + polviews + happy + class + income + reg16 + family16 + born + parborn + sizecat + attend + relig16 + bible + satjob + satfin + abnomore + absingle + divlaw, family=binomial(link='logit'),data=trainA) 
 summary(fitA)
+trainA$pred <- fitA$fitted.values
+trainA$pred <- ifelse(trainA$pred > 0.5,1,0)
+table(trainA$marital2, trainA$pred)
+validA$pred <- predict(fitA, newdata = validA, type = "response")
+validA$pred <- ifelse(validA$pred > 0.5,1,0)
+table(validA$marital2, validA$pred)
+fitA2 <- glm(marital2 ~ year + region + childs + degree + Agecat1 + widowed + wrkstat + class + income +  family16 + born + parborn + sizecat, family=binomial(link='logit'),data=trainA) 
+trainA$pred2 <- fitA2$fitted.values
+trainA$pred2 <- ifelse(trainA$pred2 > 0.5,1,0)
+table(trainA$marital2, trainA$pred2)
+validA$pred2 <- predict(fitA2, newdata = validA, type = "response")
+validA$pred2 <- ifelse(validA$pred2 > 0.5,1,0)
+table(validA$marital2, validA$pred2)
 
-  
+
+fitB <- glm(marital2 ~ year + sexeduc + region + premarsx + pornlaw + partyid + fund + childs + degree + Agecat1 + widowed + wrkstat + polviews + happy + trust + class + income + reg16 + family16 + born + parborn + size + attend + relig16 + bible + helpful + fair + consci + satjob + satfin + xmovie + divlaw + fefam, family=binomial(link='logit'),data=trainB) 
+summary(fitB)
+
+fitC <- glm(marital2 ~ year + region + premarsx + pornlaw + partyid + fund + childs + degree + Agecat1 + widowed + wrkstat + polviews + happy + trust + class + income + reg16 + family16 + born + parborn + size + attend + relig16 + bible + helpful + fair + consci + satjob + satfin + xmovie + divlaw, family=binomial(link='logit'),data=trainB) 
+summary(fitC)
+
 
 ```
 
-# Step Five: Analysis, decision trees
+Original      | predicted marriage | predicted split
+--------------|--------------------|----------------
+married       | 1331               | 78
+split         | 368                | 162
+
+### Step Five: Analysis, decision trees
 ``` {r trees}
 
 
 
 ```
 
-# Step Six: Analysis, clusters
-```{r clusters}
-clusters.vars.A <- c("year", "sexeduc", "region", "premarsx", "xmarsex", "partyid", "fund", "childs",  "degree", "Agecat1", "widowed", "educ", "wrkstat", "polviews", "happy", "trust", "class",  "reg16", "family16", "born", "parborn", "income", "size", "attend", "relig16", "bible", "satfin", "abnomore", "absingle", "divlaw", "fefam", "marital2")
-clusters.train.a <- trainA[,clusters.vars.A]
-clusters.train.a <- clusters.train.a[complete.cases(clusters.train.a),]
-dist.mat.A <- dist(clusters.train.a, method = "euclidean")
-clusters.a <- hclust(dist.mat.A)
-
-#using packages factoextra and NbClust
+### Step Six: Analysis, clusters
+```{r cluster setup, include=FALSE, cache = TRUE }
+#using packages factoextra and NbClust and Cluster
 library(factoextra)
 library(NbClust)
+library(cluster)
+
+# set necessary variables for cluster analysis
+clusters.train.a <- GSS.A[,clusters.vars.A]
+clusters.train.a <- clusters.train.a[complete.cases(clusters.train.a),]
+
+gss.a.mat <- model.matrix(~0 + year + sexeduc + region + premarsx + xmarsex + partyid + fund + childs + degree + Agecat1 + widowed + wrkstat + polviews + happy + class + income + reg16 + family16 + born + parborn + sizecat + attend + relig16 + bible + satjob + satfin + abnomore + absingle + divlaw, clusters.train.a)
+
+# now with B ballot
+clusters.vars.B <- c("year", "sexeduc", "region", "premarsx", "pornlaw", "partyid", "fund", "childs",  "degree", "Agecat1", "widowed", "wrkstat", "polviews", "happy", "trust", "class",  "reg16", "family16", "born", "parborn", "income", "sizecat", "attend", "relig16", "bible", "helpful", "fair", "consci", "satjob", "satfin", "xmovie", "fefam", "divlaw", "marital2")
+clusters.b <- GSS.B[,clusters.vars.B]
+clusters.b <- clusters.b[complete.cases(clusters.b),]
+
+gss.b.mat <- model.matrix(~0 + year + sexeduc + region + premarsx + pornlaw + partyid + fund + childs + degree + Agecat1 + widowed + wrkstat + polviews + happy + trust + class + income + reg16 + family16 + born + parborn + sizecat + attend + relig16 + bible + helpful + fair + consci + satjob + satfin + xmovie + divlaw + fefam, clusters.b)
+
+# now with Ballot C
+clusters.vars.C <- c("year", "region", "xmarsex", "pornlaw", "partyid", "fund", "childs",  "degree", "Agecat1", "widowed", "wrkstat", "polviews", "happy", "trust", "class", "reg16", "family16", "born", "parborn", "income", "fair", "helpful", "sizecat", "attend", "relig16", "bible", "consci", "satjob", "satfin", "abnomore", "absingle", "xmovie", "marital2")
+clusters.c <- GSS.C[,clusters.vars.C]
+clusters.c <- clusters.c[complete.cases(clusters.c),]
+
+gss.c.mat <- model.matrix(~0 + year + region + xmarsex + pornlaw + partyid + fund + childs + degree + Agecat1 + widowed + wrkstat + polviews + happy + trust + class + income + reg16 + family16 + born + parborn + sizecat + attend + relig16 + bible + helpful + fair + consci + satjob + satfin + abnomore + absingle + xmovie, clusters.c)
+```
+``` {r cluster A, include=FALSE, cache=TRUE}
+#determine optimal number of clusters using method within-cluster sum of squares
+# visualize as line ("elbow" method)
+elbow.a <- fviz_nbclust(gss.a.mat, kmeans, method = "wss") 
+# (silhouette method)
+sil.plot.a <- fviz_nbclust(gss.a.mat, kmeans, method = "silhouette") 
+  # optimal cluster is 2! 
+# compute kmeans clusters
+km.a <- kmeans(gss.a.mat, 2, 10)
+# compute hierarchical clusters and check silhouette for validation 
+hc.a <- eclust(gss.a.mat, "hclust", k=2, method="ward.D2", graph=FALSE)
+sil.a <- hc.a$silinfo
+sil.a$clus.avg.widths
+  # not very good  ~0.45
+# compute PAM clusters
+pam.a <- pam(gss.a.mat, 2)
+# visulize as silhouette plot
+fviz_silhouette(pam.a)
+  # similar to hierarchical
+
+#compare clusters to marital status
+table(clusters.train.a$marital2, km.a$cluster)
+table(clusters.train.a$marital2, hc.a$cluster)
+table(clusters.train.a$marital2, pam.a$cluster)
+```
+```{r cluster output A, echo=FALSE, warning=FALSE, message=FALSE}
+grid.arrange(elbow.a, sil.plot.a, ncol=2)
+```
+```{r cluster B and C, include=FALSE, cache=TRUE}
+#determine optimal number of clusters using method within-cluster sum of squares
+# visualize as line ("elbow" method)
+elbow.b <- fviz_nbclust(gss.b.mat, kmeans, method = "wss") 
+# (silhouette method)
+sil.plot.b <- fviz_nbclust(gss.b.mat, kmeans, method = "silhouette") 
+  # optimal cluster is 2! 
+# compute kmeans clusters
+km.b <- kmeans(gss.b.mat, 2, 10)
+#ksil.a <- silhouette(km.a$cluster, dist(diss.a))
+#head(ksil.a)
+# compute hierarchical clusters and check silhouette for validation 
+hc.b <- eclust(gss.b.mat, "hclust", k=2, method="complete", graph=FALSE)
+sil.b <- hc.b$silinfo
+sil.b$clus.avg.widths
+  # not very good  ~0.47/~0.38
+
+# compute PAM clusters
+pam.b <- pam(gss.b.mat, 2)
+# visulize as silhouette plot
+fviz_silhouette(pam.b)
+  # similar to hierarchical
+
+#compare clusters to marital status
+table(clusters.b$marital2, km.b$cluster)
+table(clusters.b$marital2, hc.b$cluster)
+table(clusters.b$marital2, pam.b$cluster)
+
 
 #determine optimal number of clusters using method within-cluster sum of squares
-fviz_nbclust(clusters.train.a, kmeans, method = "wss") 
-sil.a <- silhouette(,)
-tree.a <- cutree(clusters.a, k=2)
-table(tree.a)
-plot(cut(as.dendrogram(clusters.a), h=2000)$upper, leaflab="none")
-dist.mat.A2 <- dist(clusters.train.a, method = "manhattan")
-clusters.a2 <- hclust(dist.mat.A2)
-tree.a2 <- cutree(clusters.a2, k=2)
-table(tree.a2)
-plot(cut(as.dendrogram(clusters.a2), h=2000)$upper, leaflab="none")
-dist.mat.A3 <- dist(clusters.train.a, method = "maximum")
-clusters.a3 <- hclust(dist.mat.A3)
-tree.a3 <- cutree(clusters.a3, k=2)
-table(tree.a3)
-plot(cut(as.dendrogram(clusters.a3), h=0)$upper, leaflab="none")
+# visualize as line ("elbow" method)
+fviz_nbclust(gss.c.mat, kmeans, method = "wss") 
+# (silhouette method)
+fviz_nbclust(gss.c.mat, kmeans, method = "silhouette") 
+  # optimal cluster is 2! 
+# compute kmeans clusters
+km.c <- kmeans(gss.c.mat, 2, 10)
+#ksil.a <- silhouette(km.a$cluster, dist(diss.a))
+#head(ksil.a)
+# compute hierarchical clusters and check silhouette for validation 
+hc.c <- eclust(gss.c.mat, "hclust", k=2, method="complete", graph=FALSE)
+sil.c <- hc.c$silinfo
+sil.c$clus.avg.widths
+  # not very good  ~0.28/~0.41
 
+# compute PAM clusters
+pam.c <- pam(gss.c.mat, 2)
+# visulize as silhouette plot
+fviz_silhouette(pam.c)
+  # similar to hierarchical
+
+#compare clusters to marital status
+table(clusters.b$marital2, km.b$cluster)
+table(clusters.b$marital2, hc.b$cluster)
+table(clusters.b$marital2, pam.b$cluster)
 ```
