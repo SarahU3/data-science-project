@@ -360,7 +360,6 @@ testC <- GSS.C[rand<0.15,]
 ``` {r logit, include=FALSE, cache=TRUE}
 ###Logistic Regression 
 #glm(marital2 ~ <x>, data = <data>, family = binomial())
-<<<<<<< HEAD
 fitA <- glm(marital2 ~ year + sexeduc + region + premarsx + xmarsex + partyid + fund + childs + degree + Agecat1 + widowed + wrkstat + polviews + happy + class + income + reg16 + family16 + born + parborn + sizecat + attend + relig16 + bible + satjob + satfin + abnomore + absingle + divlaw, family=binomial(link='logit'),data=trainA) 
 summary(fitA)
 trainA$pred <- fitA$fitted.values
@@ -383,7 +382,7 @@ summary(fitB)
 
 fitC <- glm(marital2 ~ year + region + premarsx + pornlaw + partyid + fund + childs + degree + Agecat1 + widowed + wrkstat + polviews + happy + trust + class + income + reg16 + family16 + born + parborn + size + attend + relig16 + bible + helpful + fair + consci + satjob + satfin + xmovie + divlaw, family=binomial(link='logit'),data=trainB) 
 summary(fitC)
-=======
+
 #TrainA
 fitA <- glm(marital2 ~ year + sexeduc + region + premarsx + xmarsex + partyid + fund + childs + degree + Agecat1 + widowed + wrkstat + polviews + happy + class + income + reg16 + family16 + born + parborn + size + attend + relig16 + bible + satfin + abnomore + absingle + divlaw + fefam, family=binomial(link='logit'),data=trainA) 
 #data = dfTraining, family = binomial())
