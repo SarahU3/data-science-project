@@ -43,7 +43,7 @@ var_list <- c("oversamp", "formwt", "wtssall", "sampcode", "sample", "id", "ball
           "marital", "partyid", "hapmar", "denom", "fund", "childs", "degree",
           "age", "divorce", "widowed", "educ", "natdrug", "wrkstat", "spwrksta",
           "polviews", "happy", "trust", "class", "income", "version", "reg16", 
-          "family16", "famdif16", "born", "parborn", "income91", "size", "attend",
+          "family16", "famdif16", "born", "parborn", "income91", "income98", "size", "attend",
           "relig16", "bible", "helpful", "fair", "consci", "satjob", "satfin", 
           "abnomore", "absingle", "divlaw", "xmovie", "fefam")
 
