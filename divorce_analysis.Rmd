@@ -292,9 +292,9 @@ table(validC$marital2, validC$pred)
 ```
 
 ## Analysis Method Two: Decision Trees
-For both decision trees and random forests (below) we tested using both the complete cases and imputing data to fill in missing values. 
+For both decision trees and random forests (below) we tested using both the complete cases and imputing data to fill in missing values. In the cases of both the complete cases and imputed data, decision tree models for all 3 ballots were more accurate than their random forest counterparts. For these initial runs, we tested our models on their corresponding training sets.
 
-### Decision Tress with Complete Cases
+### Model: Decision Trees with Complete Cases: Initial Tests on Complete Cases Training Sets
 ``` {r decision trees complete, include=FALSE, cache=TRUE}
 
 #Ballot A
@@ -304,8 +304,8 @@ rpart.plot(rtree_fitA, shadow.col="gray", nn=TRUE)
 
 trainApred <- predict(rtree_fitA, trainA, type = 'class')
 table(trainApred, trainA$marital2)
-##Accuracy: (2626 + 407)/(2626 + 407 + 740 + 136)
-###Accuracy: 77.59%
+##Accuracy: (1570+319)/(1570+101+319+357)
+###Accuracy: 80.49%
 
 #Ballot B
 rtree_fitB <-rpart(marital2 ~ year + sexeduc + region + premarsx + pornlaw + partyid + fund + childs + degree + Agecat1 + widowed + wrkstat + polviews + happy + trust + class + income + reg16 + family16 + born + parborn + sizecat + attend + relig16 + bible + helpful + fair + consci + satjob + satfin + divlaw + xmovie + fefam, data = trainB, method = 'class', cp = 0.00519031)
@@ -313,8 +313,8 @@ printcp(rtree_fitB)
 rpart.plot(rtree_fitB, shadow.col="gray", nn=TRUE)
 trainBpred <- predict(rtree_fitB, trainB, type = 'class')
 table(trainBpred, trainB$marital2)
-##Accuracy: (2662 + 403)/(2662+403 + 753+159)
-###Accuracy: 77.07%
+##Accuracy: (1356+164)/(1356+164+417+51)
+###Accuracy: 76.46%
 
 
 #Ballot C
@@ -323,8 +323,8 @@ printcp(rtree_fitC)
 rpart.plot(rtree_fitC, shadow.col="gray", nn=TRUE)
 trainCpred <- predict(rtree_fitC, trainC, type = 'class')
 table(trainCpred, trainC$marital2)
-##Accuracy: (2633 + 468)/(2633+468+690+210)
-##Accuracy: 77.51%
+##Accuracy: (1305+287)/(1305+287+296+96)
+##Accuracy: 80.24%
 
 
 ##Source: https://www.r-bloggers.com/using-decision-trees-to-predict-infant-birth-weights/
@@ -374,7 +374,7 @@ validCknn <- knnOutputC[rand>0.15 & rand <0.3,]
 testCknn <- knnOutputC[rand<0.15,]
 ```
 
-### Decision Trees with Imputed Values
+### Model: Decision Trees with Imputed Values: Initial Tests on Imputed Data Training Sets 
 ``` {r imputed decision trees, include=FALSE, cache=TRUE}
 ###Decision Trees 
 
@@ -384,19 +384,15 @@ printcp(rtree_fitAknn)
 rpart.plot(rtree_fitAknn, shadow.col="gray", nn=TRUE)
 trainApredknn <- predict(rtree_fitAknn, trainAknn, type = 'class')
 table(trainApredknn, trainAknn$marital2)
-##Accuracy: (2584 + 514)/(2584+514+633+178) = ###Accuracy: 79.25%
-##Accuracy with collapsed levels: (2651+365)/(2651+365+111+782) = 77.15%
+##Accuracy: (2592+379)/(2592+379+768+170) = ###Accuracy: 76.00%
 
 #Ballot B
 rtree_fitBknn <-rpart(marital2 ~ year + sexeduc + region + premarsx + pornlaw + partyid + fund + childs + degree + Agecat1 + widowed + wrkstat + polviews + happy + trust + class + income + reg16 + family16 + born + parborn + sizecat + attend + relig16 + bible + helpful + fair + consci + satfin + divlaw + xmovie + fefam, data = trainBknn, method = 'class', cp =  0.00519031)
-#cp = 0.00692042
 printcp(rtree_fitBknn)
 rpart.plot(rtree_fitBknn, shadow.col="gray", nn=TRUE)
 trainBpredknn <- predict(rtree_fitBknn, trainBknn, type = 'class')
 table(trainBpredknn, trainBknn$marital2)
-##Accuracy: (2725+408)/(2725+408+748+96) = ###Accuracy: 78.8%
-##Accuracy with collapsed levels: (2722 + 274)/(2722+274+882+99)= 75.33%
-
+##Accuracy: (2699+311)/(2699+311+845+122) = ###Accuracy: 75.69%
 
 #Ballot C
 rtree_fitCknn <-rpart(marital2 ~ year + region + xmarsex + pornlaw + partyid + fund + childs + degree + Agecat1 + widowed + wrkstat + polviews + trust + happy + class + income + reg16 + family16 + born + parborn + sizecat + attend + relig16 + helpful + fair + consci + satjob + satfin + abnomore + absingle + xmovie, data = trainCknn, method = 'class', cp = 0.00388601)
@@ -404,24 +400,27 @@ printcp(rtree_fitCknn)
 rpart.plot(rtree_fitCknn, shadow.col="gray", nn=TRUE)
 trainCpredknn <- predict(rtree_fitCknn, trainCknn, type = 'class')
 table(trainCpredknn, trainCknn$marital2)
-##Accuracy: (2717+556)/(2717+556+602+126) = ##Accuracy: 82%
-##Accuracy with collapsed levels: (2692+502)/(2692+502+151+656) = 79.83%
+##Accuracy: (2702+448)/(2702+448+710+141) = 78.73%
 
 
 ```
-### Decision Trees: Comparing Results
+
+### Decision Trees: Comparing Predictive Accuracy of Imputed and Complete Case Decision Tree Models on Complete Case Test Sets 
+##The most accurate model that predicts split (divorce/separate) outcomes is the imputed decision tree model based on Ballot C. The model's overall accuracy rate in predicting marital status is 75.51% It has a 78.16% accuracy rate at predicting married statuses, and a 60% accuracy rate at predicting splits. 
+
+
+    
 ```{r test models on complete data, include=FALSE, cache=TRUE}
 #Ballot A
 ###Complete on Complete  
     rtree_fitAcc <-rpart(marital2 ~ year + sexeduc + region + premarsx + xmarsex + partyid + fund + childs + degree + Agecat1 + widowed + wrkstat + polviews + happy + class + income + reg16 + family16 + born + parborn + sizecat + attend + relig16 + bible + satfin + abnomore + absingle + divlaw + fefam, data = trainA, method = 'class', cp = 0.00739645)
      printcp(rtree_fitAcc)
     rpart.plot(rtree_fitAcc, shadow.col="gray", nn=TRUE)
-    
     trainApredcc <- predict(rtree_fitAcc, testA, type = 'class')
     table(trainApredcc, testA$marital2)
-    ##Overall Accuracy: (337+43)/(337+43+89+24)= 77.08%
-    ##Married accuracy: 337/(337+89) = 79.12%
-    ##Split accuracy:  43/(24+43) = 64.18%
+    ##Overall Accuracy:  (343+49)/(343+49_95+33)= 75.38%
+    ##Married Accuracy: 343/(343+95)= 78.31%
+    ##Split Accuracy:49/(82)=59.76%
 
 ##Imputed on Complete
   rtree_fitAknn <-rpart(marital2 ~ year + sexeduc + region + premarsx + xmarsex + partyid + fund + childs + degree + Agecat1 + widowed + wrkstat + polviews + happy + class + income + reg16 + family16 + born + parborn + sizecat + attend + relig16 + bible + satfin + abnomore + absingle + divlaw + fefam, data = trainAknn, method = 'class', cp =  0.00435920)
@@ -429,11 +428,10 @@ table(trainCpredknn, trainCknn$marital2)
     rpart.plot(rtree_fitAknn, shadow.col="gray", nn=TRUE)
     trainApredknnonc <- predict(rtree_fitAknn, testA, type = 'class')
     table(trainApredknnonc, testA$marital2)
-    ##Accuracy: (341+35)/(341+35+97+20) =  76.27%
-    ##Married accuracy: 341/(341+97) = 77.85%
-    ##Split accuracy:  35/55 = 63.64%
+    ##Overall Accuracy: (349+40)/(349+104+27+40)=74.81%
+    ##Married Accuracy: 349/(349+104)=77.04%
+    ##Split Accuracy: 40/67 = 59.70%
     
-############################
 #Ballot B
 #Complete on Complete        
     rtree_fitBcc <-rpart(marital2 ~ year + sexeduc + region + premarsx + pornlaw + partyid + fund + childs + degree + Agecat1 + widowed + wrkstat + polviews + happy + trust + class + income + reg16 + family16 + born + parborn + sizecat + attend + relig16 + bible + helpful + fair + consci + satfin + divlaw + xmovie + fefam, data = trainB, method = 'class', cp =  0.00681431)
@@ -441,9 +439,9 @@ table(trainCpredknn, trainCknn$marital2)
     rpart.plot(rtree_fitBcc, shadow.col="gray", nn=TRUE)
     trainBpredcc <- predict(rtree_fitBcc, testB, type = 'class')
     table(trainBpredcc, testB$marital2)
-    ##Overall Accuracy:  (249+33)/(249+86+33+31)= 70.68%
-    ##Married accuracy:  249/(249+86)= 74.33
-    ##Split accuracy:   33/(31+33) = 51.56%
+    ##Overall Accuracy:  (274+30)/(274+30+29+94)=71.19%
+    ##Married accuracy:  (274)/(274+94) = 74.46%
+    ##Split accuracy:   30/59 = 50.85%
 
 ##Imputed on Complete
   rtree_fitBknn <-rpart(marital2 ~ year + sexeduc + region + premarsx + pornlaw + partyid + fund + childs + degree + Agecat1 + widowed + wrkstat + polviews + happy + trust + class + income + reg16 + family16 + born + parborn + sizecat + attend + relig16 + bible + helpful + fair + consci + satfin + divlaw + xmovie + fefam, data = trainBknn, method = 'class', cp =  0.00201845)
@@ -451,35 +449,45 @@ table(trainCpredknn, trainCknn$marital2)
     rpart.plot(rtree_fitBknn, shadow.col="gray", nn=TRUE)
     trainBpredknnonc <- predict(rtree_fitBknn, testB, type = 'class')
     table(trainBpredknnonc, testB$marital2)
-    ##Accuracy: (258+51)/(258+51+68+22) =  77.44%
-    ##Married accuracy: 258/(258+68) = 79.14%
-    ##Split accuracy:  51/(22+51) = 69.86%
+    ##Accuracy: (272+40)/(272+84+31+40) = 73.07%
+    ##Married accuracy: 272/(272+84) = 76.40%
+    ##Split accuracy:  40/71 = 56.34%
     
 #Ballot C    
-
   #Complete on Complete        
     rtree_fitCcc <-rpart(marital2 ~ year + region + xmarsex + pornlaw + partyid + fund + childs + degree + Agecat1 + widowed + wrkstat + polviews + trust + happy + class + income + reg16 + family16 + born + parborn + sizecat + attend + relig16 + helpful + fair + consci + satjob + satfin + abnomore + absingle + xmovie, data = trainC, method = 'class', cp =  0.00681431)
     printcp(rtree_fitCcc)
     rpart.plot(rtree_fitCcc, shadow.col="gray", nn=TRUE)
     trainCpredcc <- predict(rtree_fitCcc, testC, type = 'class')
     table(trainCpredcc, testC$marital2)
-    ##Accuracy: (58+11)/(58+11+28+16)= 61.06%
-    ##Married accuracy:58/(58+28)= 67.44%
-    ##Split accuracy:  11/(11+16)= 40.74%
+    ##Accuracy: (279+45)/(279+77+44+45)= 72.81%
+    ##Married accuracy:279/(279+77)= 78.38%
+    ##Split accuracy:  45/89= 50.56%
     
     
 #Imputed on Complete
 rtree_fitCknn <-rpart(marital2 ~ year + region +  pornlaw + partyid + fund + childs + degree + Agecat1 + widowed + wrkstat + polviews + trust + happy + class + income + reg16 + family16 + born + parborn + sizecat + attend + relig16 + helpful + fair + consci + satjob + satfin + abnomore + absingle, data = trainCknn, method = 'class', cp =  0.00435920)
      printcp(rtree_fitCknn)
-    rpart.plot(rtree_fitCknn, shadow.col="gray", nn=TRUE)
+    ImpTreeC <- rpart.plot(rtree_fitCknn, shadow.col="gray", nn=TRUE)
     trainCpredknn <- predict(rtree_fitCknn, testC, type = 'class')
     table(trainCpredknn, testC$marital2)
-  ##Accuracy: (68+18)/(68+21+6+18)=76.11%
-    ##Married accuracy:68/(68+21)=76.40%
-    ##Split accuracy:  18/24=75%
+  ##Accuracy: (297+39)/(297+83+26+39)=75.51%
+    ##Married accuracy:297/(297+83)=78.16%
+    ##Split accuracy:  39/(26+39)=60%
 
 ```
 
+
+
+```{r}
+{r Imputed Tree Ballot C, echo=FALSE, warning=FALSE, message=FALSE}
+grid.arrange(ImpTreeC, ncol = 2)
+```
+
+trainCpredknn | predicted marriage  | predicted split
+--------------|---------------------|----------------
+married       |297                  |83
+split         |26                   |39
 
 ## Analysis Method Three: Random Forests
 ### Random Forests with Complete Cases
@@ -517,8 +525,7 @@ forestAcomplete.tune <-randomForest(marital2 ~ year + sexeduc + region + premars
   #Set up ROC inputs
   input.rfAcomplete <- rbind(data.frame(model = "trainAcomplete", d = trainA$marital2, m = pred.rf.trainAcomplete), 
                   data.frame(model = "validAcomplete", d = validA$marital2,  m = pred.rf.validAcomplete))
-  ##(used to be test)
-  
+
 #Graph all three ROCs
   roc.rfAcomplete <- ggplot(input.rfAcomplete, aes(d = d, model = model, m = m, colour = model)) + 
              geom_roc(show.legend = TRUE) + style_roc()  +ggtitle("TrainAcomplete")
@@ -528,7 +535,6 @@ forestAcomplete.tune <-randomForest(marital2 ~ year + sexeduc + region + premars
   importance(forestAcomplete)
 varImpPlot(forestAcomplete)
   
-################################################# 
 forestBcomplete <- randomForest(marital2 ~ year + sexeduc + region + premarsx + pornlaw + partyid + fund + childs + degree + Agecat1 + widowed + wrkstat + polviews + happy + trust + class + income + reg16 + family16 + born + parborn + sizecat + attend + relig16 + bible + helpful + fair + consci + satfin + divlaw + xmovie + fefam, data = trainB)
 ##Measuring error rate: 
 forestBcomplete
@@ -557,7 +563,7 @@ forestBcomplete
   #Predict values for train set
   pred.rf.trainBcomplete <- predict(forestBcomplete.tune, newdata = trainB, type='prob')[,2]
 
-#Predict values for test set (or validating set?)
+#Predict values for validating set
   pred.rf.validBcomplete <- predict(forestBcomplete, validB, type='prob')[,2]
 
   #Set up ROC inputs
@@ -573,7 +579,6 @@ forestBcomplete
   importance(forestBcomplete)
 varImpPlot(forestBcomplete)
 
-######################## 
 forestCcomplete <- randomForest(marital2 ~ year + region + xmarsex + pornlaw + partyid + fund + childs + degree + Agecat1 + widowed + wrkstat + polviews + trust + happy + class + income + reg16 + family16 + born + parborn + sizecat + attend + relig16 + helpful + fair + consci + satjob + satfin + abnomore + absingle +xmovie, data = trainC)
 
 ##Measuring error rate: 
@@ -601,7 +606,7 @@ forestCcomplete
   #Predict values for train set
   pred.rf.trainCcomplete <- predict(forestCcomplete.tune, newdata = trainC, type='prob')[,2]
 
-#Predict values for test set
+#Predict values for valid. set
   pred.rf.validCcomplete <- predict(forestCcomplete, validC, type='prob')[,2]
 
   #Set up ROC inputs
