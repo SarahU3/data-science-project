@@ -1,10 +1,10 @@
 ---
-title: "Divorce Analysis"
+title: "Predicting Divorce"
 author: "Celeste Chen and Sarah Unbehaun"
 date: "May 8, 2017"
 output:
   pdf_document: default
-  ---
+---
 
 ```{r setup, include=FALSE}
 knitr::opts_chunk$set(echo = TRUE)
@@ -25,8 +25,24 @@ library(cluster)
 ```{r data, include=FALSE}
 load("GSSdivorce.rda")
 ```
+## Project Overview
+Given the evolving discourse and perspectives on marriage, we seek to predict the probability that a couple will get a divorce based factors such as social views; attitudes about pornography, premarital sex or extra-marital sex; and fundamentalism of religious views.  Using data from the General Social Survey, we will train an algorithm on a generational cohort from the years 1996-2014 to determine which types of respondents are most likely to experience divorce. We will test several methods of analyzing the data for predictions: (1) logistic regression, (2) decision trees, (3) random forest and (4) clustering. Based on the accuracy results of each method, we will determine the best model for prediction.
 
 ## Data
+Our dataset will be taken from the General Social Survey (GSS) and focus on observations from 1996 to 2014. According to the [GSS website](http://gss.norc.org/About-The-GSS) 
+>The GSS contains a standard core of demographic, behavioral, and attitudinal questions, plus topics of special interest. Among the topics covered are civil liberties, crime and violence, intergroup tolerance, morality, national spending priorities, psychological well-being, social mobility, and stress and traumatic events. Altogether the GSS is the single best source for sociological and attitudinal trend data covering the United States.
+
+We have extracted the variables on the following characteristics for our analysis: opinions on sex education in the public schools; region of interview; opinions on premarital sex; opinions on extramarital sex; views on pornography laws; marital status; political party ID; how fundamental is respondent; number of children; age of respondent; ever been widowed; highest educational degree achieved; respondent's labor force status; whether the respondent thinks of self as liberal or conservative; general self-reported happiness; can people be trusted; self-reported class; self-reported income; region at age 16; who the respondent lived with at age 16; religion at age 16; frequency of church attendance; does the respondent believe other people would try to take advantage or be fair; does the respondent believe other people usually try to be helpful; size of city or town of residence; confidence in scientific community; self-reported job satisfaction; elf-reported satisfaction with financial situation; 
+whether abortions should be legal for married women who don't want more children; whether abortions should be legal if the woman is single and doesn't want to marry; and whether the respondent has seen an x-rated movie in the last year. 
+
+Not all of these questions were asked of all respondents. Three ballots were administered, so our data had to be analyzed in groups corresponding to each ballot. We also restricted our data to those who were married or "split," split being those who were either divorced or separated. The number of observations for each category are shown below: 
+
+Ballot  |  A   | B    | C    | Total
+--------|------|------|------|-------
+Married | 4008 | 4025 | 4054 | 12853
+Split   | 1607 | 1665 | 1667 | 5238
+Total   | 5615 | 5700 | 5721 | 18091
+
 ```{r missing, include=FALSE, cache=TRUE}
 #Restrict to 1996-2014 and married, divorced or separated
 GSS.divorce <- GSS.divorce[GSS.divorce$year>=1996, ]
@@ -41,6 +57,7 @@ GSS.divorce$marital2 [is.na(GSS.divorce$marital) ==T] <- NA
 GSS.divorce$marital2 <- factor(GSS.divorce$marital2)
 GSSnew <- GSS.divorce[!is.na(GSS.divorce$marital2),]
 summary(GSSnew$marital2)
+table(GSSnew$marital2, GSSnew$ballot)
 
 #Create categorical variable for size of place
 GSSnew$sizecat <- NA
@@ -61,78 +78,12 @@ pie_1b <- ggplot(tab, aes(status, premarital)) +
               geom_point(aes(size = count), colour = "navy") + 
               theme_bw() + xlab("Marital Status?") + ylab("Opinion on premarital sex?") + scale_size_continuous(range=c(3,15)) + theme(plot.title = element_text(size = 10), legend.position="none")  + coord_fixed(ratio = 1)
 
-##Opinion on Pornography Laws
-tab <- as.data.frame(table(GSSnew$marital2, GSSnew$pornlaw))
-colnames(tab) <- c("status", "porn", "count")
-pie_2b <- ggplot(tab, aes(status, porn)) + 
-              geom_point(aes(size = count), colour = "navy") + 
-              theme_bw() + xlab("Marital Status?") + ylab("Opinion on pornography regulation?") + scale_size_continuous(range=c(3,15)) + theme(plot.title = element_text(size = 10), legend.position="none")  + coord_fixed(ratio = 1)
-
-##Opinion on Extramarital Sex 
-tab <- as.data.frame(table(GSSnew$marital2, GSSnew$xmarsex))
-colnames(tab) <- c("status", "exmar", "count")
-pie_3b <- ggplot(tab, aes(status, exmar)) + 
-              geom_point(aes(size = count), colour = "navy") + 
-              theme_bw() + xlab("Marital Status?") + ylab("Opinion on extramarital sex?") + scale_size_continuous(range=c(3,15)) + theme(plot.title = element_text(size = 10), legend.position="none")  + coord_fixed(ratio = 1)
-
-##Party Identification 
-tab <- as.data.frame(table(GSSnew$marital2, GSSnew$partyid))
-colnames(tab) <- c("status", "party", "count")
-pie_4b <- ggplot(tab, aes(status, party)) + 
-              geom_point(aes(size = count), colour = "navy") + 
-              theme_bw() + xlab("Marital Status?") + ylab("Party identification?") + scale_size_continuous(range=c(3,15)) + theme(plot.title = element_text(size = 10), legend.position="none")  + coord_fixed(ratio = 1)
-
 ##How happy are you? 
 tab <- as.data.frame(table(GSSnew$marital2, GSSnew$happy))
 colnames(tab) <- c("status", "happy", "count")
 pie_5b <- ggplot(tab, aes(status, happy)) + 
               geom_point(aes(size = count), colour = "navy") + 
               theme_bw() + xlab("Marital Status?") + ylab("How happy are you?") + scale_size_continuous(range=c(3,15)) + theme(plot.title = element_text(size = 10), legend.position="none")  + coord_fixed(ratio = 1)
-
-##Fundamentalism of Religion 
-tab <- as.data.frame(table(GSSnew$marital2, GSSnew$fund))
-colnames(tab) <- c("status", "fund", "count")
-pie_6b <- ggplot(tab, aes(status, fund)) + 
-              geom_point(aes(size = count), colour = "navy") + 
-              theme_bw() + xlab("Marital Status?") + ylab("Fundamentalism of religion?") + scale_size_continuous(range=c(3,15)) + theme(plot.title = element_text(size = 10), legend.position="none")  + coord_fixed(ratio = 1)
-
-##Self-Identified Class
-tab <- as.data.frame(table(GSSnew$marital2, GSSnew$class))
-colnames(tab) <- c("status", "class", "count")
-pie_7b <- ggplot(tab, aes(status, class)) + 
-              geom_point(aes(size = count), colour = "navy") + 
-              theme_bw() + xlab("Marital Status?") + ylab("Self-identified class?") + scale_size_continuous(range=c(3,15)) + theme(plot.title = element_text(size = 10), legend.position="none")  + coord_fixed(ratio = 1)
-
-##Work Status
-tab <- as.data.frame(table(GSSnew$marital2, GSSnew$wrkstat))
-colnames(tab) <- c("status", "work", "count")
-pie_8b <- ggplot(tab, aes(status, work)) + 
-              geom_point(aes(size = count), colour = "navy") + 
-              theme_bw() + xlab("Marital Status?") + ylab("Work status?") + scale_size_continuous(range=c(3,15)) + theme(plot.title = element_text(size = 10), legend.position="none")  + coord_fixed(ratio = 1)
-
-
-##Degree 
-tab <- as.data.frame(table(GSSnew$marital2, GSSnew$degree))
-colnames(tab) <- c("status", "edu", "count")
-pie_9b <- ggplot(tab, aes(status, edu)) + 
-              geom_point(aes(size = count), colour = "navy") + 
-              theme_bw() + xlab("Marital Status?") + ylab("Years of education?") + scale_size_continuous(range=c(3,15)) + theme(plot.title = element_text(size = 10), legend.position="none")  + coord_fixed(ratio = 1)
-
-      ###Histogram
-        EducGraph2 <- ggplot(GSSnew, aes(x= educ,  group=marital2)) + 
-            geom_bar(aes(y = ..prop.., fill = factor(..x..)), stat="count") +
-            geom_text(aes( label = scales::percent(..prop..),
-                           y= ..prop.. ), stat= "count", vjust = -.5) +
-            labs(y = "Percent", fill="educ") +
-            facet_grid(~marital2) +
-            scale_y_continuous(labels = scales::percent)
-
-##Children 
-tab <- as.data.frame(table(GSSnew$marital2, GSSnew$childs))
-colnames(tab) <- c("status", "child", "count")
-pie_10b <- ggplot(tab, aes(status, child)) + 
-              geom_point(aes(size = count), colour = "navy") + 
-              theme_bw() + xlab("Marital Status?") + ylab("Children?") + scale_size_continuous(range=c(3,15)) + theme(plot.title = element_text(size = 10), legend.position="none")  + coord_fixed(ratio = 1)
 
 
 #Sex Education in Schools
@@ -144,34 +95,13 @@ SexEducGraph2 <- ggplot(data=subset(GSSnew, !is.na(sexeduc)), aes(x= sexeduc,  g
                   facet_grid(~marital2) +
                   scale_y_continuous(labels = scales::percent)
 
-##Region 
-tab <- as.data.frame(table(GSSnew$marital2, GSSnew$region))
-colnames(tab) <- c("status", "region", "count")
-pie_12b <- ggplot(tab, aes(status, region)) + 
-              geom_point(aes(size = count), colour = "navy") + 
-              theme_bw() + xlab("Marital Status?") + ylab("Region?") + scale_size_continuous(range=c(3,15)) + theme(plot.title = element_text(size = 10), legend.position="none")  + coord_fixed(ratio = 1)
-
 ##Can people be trusted? 
-tab <- as.data.frame(table(GSSnew$marital2, GSSnew$trust))
-colnames(tab) <- c("status", "trust", "count")
-pie_13b <- ggplot(tab, aes(status, trust)) + 
-              geom_point(aes(size = count), colour = "navy") + 
-              theme_bw() + xlab("Marital Status?") + ylab("Can people be trusted?") + scale_size_continuous(range=c(3,15)) + theme(plot.title = element_text(size = 10), legend.position="none")  + coord_fixed(ratio = 1)
-
-      TrustGraph2 <- ggplot(GSSnew, aes(x= trust,  group=marital2)) + 
+TrustGraph2 <- ggplot(data=subset(GSSnew, !is.na(trust)), aes(x= trust,  group=marital2)) + 
                         geom_bar(aes(y = ..prop.., fill = factor(..x..)), stat="count") +
                         geom_text(aes( label = scales::percent(..prop..),
                                        y= ..prop.. ), stat= "count", vjust = -.5) +
                         labs(y = "Percent", fill="trust") +
-                        facet_grid(~marital2) +
-                        scale_y_continuous(labels = scales::percent)
-
-##Region at age 16
-tab <- as.data.frame(table(GSSnew$marital2, GSSnew$reg16))
-colnames(tab) <- c("status", "region16", "count")
-pie_20b <- ggplot(tab, aes(status, region16)) + 
-              geom_point(aes(size = count), colour = "navy") + 
-              theme_bw() + xlab("Marital Status?") + ylab("Region at age 16?") + scale_size_continuous(range=c(3,15)) + theme(plot.title = element_text(size = 10), legend.position="none")  + coord_fixed(ratio = 1)
+                        facet_grid(~marital2) + scale_y_continuous(labels = scales::percent) + theme(axis.text.x=element_text(angle = -90, hjust = 0))
 
 
 ##Live with both parents at age 16
@@ -181,12 +111,31 @@ pie_21b <- ggplot(tab, aes(status, family16)) +
               geom_point(aes(size = count), colour = "navy") + 
               theme_bw() + xlab("Marital Status?") + ylab("Live with both parents at age 16?") + scale_size_continuous(range=c(3,15)) + theme(plot.title = element_text(size = 10), legend.position="none")  + coord_fixed(ratio = 1)
 
+## rescale to both parents, parent/stepparent, other???
+familyGraph2 <- ggplot(GSSnew, aes(x= family16,  group=marital2)) + 
+                        geom_bar(aes(y = ..prop.., fill = factor(..x..)), stat="count") +
+                        geom_text(aes( label = scales::percent(..prop..),
+                                       y= ..prop.. ), stat= "count", vjust = -.5) +
+                        labs(y = "Percent", fill="family16") +
+                        facet_grid(~marital2) +
+                        scale_y_continuous(labels = scales::percent) + theme(axis.text.x=element_text(angle = -90, hjust = 0))
 
-##If not with parents, why?
-ParentsGraph2 <- ggplot(data=subset(GSSnew, !is.na(famdif16)), aes(x= famdif16, group=marital2)) + 
-                  geom_bar(aes(y = ..prop.., fill = factor(..x..)), stat="count") + geom_text(aes(label = scales::percent(..prop..), y= ..prop.. ), stat= "count", vjust = -.5) + labs(y = "Percent", fill="family") + facet_grid(~marital2) + scale_y_continuous(labels = scales::percent) + theme(axis.text.x=element_text(angle = -90, hjust = 0))
+
 ```
-``` {r visuals, echo=FALSE}
+A few examples of the differences between the married and split groups can be seen in the graphs below. First, respondents who are split appear slightly more likely to say that premarital sex is not wrong at all. They are significantly less likely to say the they are very happy. 
+
+``` {r visuals, echo=FALSE, fig.height=4}
+grid.arrange(pie_1b, pie_5b, ncol=2)
+```
+
+Also, respondents who are split are more likely to say that others cannot be trusted and slightly more likely to support sexual education in schools. 
+
+
+``` {r visuals 2, echo=FALSE, fig.height=4}
+TrustGraph2
+
+
+SexEducGraph2
 
 ```
 
@@ -230,6 +179,17 @@ testC <- GSS.C.comp[rand<0.15,]
 
 
 ## Analysis Method 1: Logistic Regression
+We first tried logistic regression models, using all relevant variables for each ballot group as well as trying models using subsets of variables: demographics only, social/political views only, and removing non-statistically significant variables based on the the complete regression. Each ballot group was separated into train, validate and test groups. The overall accuracy for each model based on the test data, calculated as the total correct predictions divided by the total number of observations, is reported below. The accuracy was fairly similar across models. 
+
+Ballot | Model         | Overall Accuracy 
+-------|---------------|-----------------
+A      | all variables | 0.75
+A      | demographics  | 0.76
+B      | all variables | 0.74
+B      | stat. signif. | 0.74
+C      | all variables | 0.72
+C      | pol/social    | 0.71
+
 ``` {r logit, include=FALSE, cache=TRUE}
 ###Logistic Regression 
 #glm(marital2 ~ <x>, data = <data>, family = binomial())
@@ -238,23 +198,33 @@ summary(fitA)
 trainA$pred <- fitA$fitted.values
 trainA$pred <- ifelse(trainA$pred > 0.5,1,0)
 table(trainA$marital2, trainA$pred)
-# accuracy
+# accuracy overall (1547 + 331)/(1547+124+345+331) = .80 
 validA$pred <- predict(fitA, newdata = validA, type = "response")
 validA$pred <- ifelse(validA$pred > 0.5,1,0)
 table(validA$marital2, validA$pred)
-# accuracy
+# accuracy overall (304 + 69)/(304+42+90+69) = .74
 
 # Test A with just demographic variables
 fitA2 <- glm(marital2 ~ year + region + childs + degree + Agecat1 + widowed + wrkstat + class + income +  family16 + born + parborn + sizecat, family=binomial(link='logit'),data=trainA) 
 trainA$pred2 <- fitA2$fitted.values
 trainA$pred2 <- ifelse(trainA$pred2 > 0.5,1,0)
 table(trainA$marital2, trainA$pred2)
-# accuracy
+# accuracy overall (1561 + 266)/(1561+110+410+266) = .78
 validA$pred2 <- predict(fitA2, newdata = validA, type = "response")
 validA$pred2 <- ifelse(validA$pred2 > 0.5,1,0)
 table(validA$marital2, validA$pred2)
-# accuracy
-# slightly better predictor for split
+# accuracy (320+56)/(320+26+1-3+56) = .94
+# significant increase is most likely a fluke, run on test data:
+testA$pred2 <- predict(fitA2, newdata = testA, type = "response")
+testA$pred2 <- ifelse(testA$pred2 > 0.5,1,0)
+table(testA$marital2, testA$pred2)
+# accuracy (345+48)/(345+31+96+48) + 0.76
+
+# compare with running fitA on testA
+testA$pred <- predict(fitA, newdata = testA, type = "response")
+testA$pred <- ifelse(testA$pred > 0.5,1,0)
+table(testA$marital2, testA$pred) 
+# accuracy = 0.75
 
 
 ## Ballot B 
@@ -263,11 +233,15 @@ summary(fitB)
 trainB$pred <- fitB$fitted.values
 trainB$pred <- ifelse(trainB$pred > 0.5,1,0)
 table(trainB$marital2, trainB$pred)
-# accuracy
+# accuracy overall (1293 + 266)/(1293+114+338+243) = .78
 validB$pred <- predict(fitB, newdata = validB, type = "response")
 validB$pred <- ifelse(validB$pred > 0.5,1,0)
 table(validB$marital2, validB$pred)
-# accuracy
+# accuracy overall (254 + 60)/(254+31+77+60) = .74
+testB$pred <- predict(fitB, newdata = testB, type = "response")
+testB$pred <- ifelse(testB$pred > 0.5,1,0)
+table(testB$marital2, testB$pred)
+# (264+51)/(264+39+73+51) = 0.74
 
 # Test B with only stat sig variables
 fitB2 <- glm(marital2 ~ pornlaw + childs + degree + Agecat1 + wrkstat + happy + class + income + reg16 + attend + bible + satjob + xmovie + divlaw, family=binomial(link='logit'),data=trainB) 
@@ -275,19 +249,47 @@ summary(fitB2)
 trainB$pred2 <- fitB2$fitted.values
 trainB$pred2 <- ifelse(trainB$pred2 > 0.5,1,0)
 table(trainB$marital2, trainB$pred2)
-# accuracy
-# not any better predictor for split
+# accuracy overall (1304+234)/(1304+103+347+234) = .77
+# not any better predictor for split, only .60
+validB$pred2 <- predict(fitB2, newdata = validB, type = "response")
+validB$pred2 <- ifelse(validB$pred2 > 0.5,1,0)
+table(validB$marital2, validB$pred2)
+# accuracy overall (255+56)/(255+30+81+56) = .74
+testB$pred2 <- predict(fitB2, newdata = testB, type = "response")
+testB$pred2 <- ifelse(testB$pred2 > 0.5,1,0)
+table(testB$marital2, testB$pred2)
+# (271+47)/(271+32+77+47) = 0.74
 
+
+## Ballot C
 fitC <- glm(marital2 ~ year + region + xmarsex + pornlaw + partyid + fund + childs + degree + Agecat1 + widowed + wrkstat + polviews + happy + trust + class + income + reg16 + family16 + born + parborn + sizecat + attend + relig16 + helpful + fair + consci + satjob + satfin + xmovie, family=binomial(link='logit'),data=trainC) 
 summary(fitC)
 trainC$pred <- fitC$fitted.values
 trainC$pred <- ifelse(trainC$pred > 0.5,1,0)
 table(trainC$marital2, trainC$pred)
-# accuracy 
+# accuracy overall (1292+109)/(1292+109+295+288) = .71
 validC$pred <- predict(fitC, newdata = validC, type = "response")
 validC$pred <- ifelse(validC$pred > 0.5,1,0)
 table(validC$marital2, validC$pred)
-# accuracy
+# accuracy overall (259+46)/(259+42+80+46) = .71
+testC$pred <- predict(fitC, newdata = testC, type = "response")
+testC$pred <- ifelse(testC$pred > 0.5,1,0)
+table(testC$marital2, testC$pred)
+
+fitC2 <- glm(marital2 ~ xmarsex + pornlaw + partyid + fund + polviews + happy + trust + attend + relig16 + helpful + fair + consci + satjob + satfin + xmovie, family=binomial(link='logit'),data=trainC)
+summary(fitC2)
+trainC$pred2 <- fitC2$fitted.values
+trainC$pred2 <- ifelse(trainC$pred2 > 0.5,1,0)
+table(trainC$marital2, trainC$pred2)
+# accuracy overall (1296+183)/(1296+105+400+183) = .75
+validC$pred2 <- predict(fitC2, newdata = validC, type = "response")
+validC$pred2 <- ifelse(validC$pred2 > 0.5,1,0)
+table(validC$marital2, validC$pred2)
+# accuracy overall (262+33)/(262+39+93+33) = .69
+testC$pred2 <- predict(fitC2, newdata = testC, type = "response")
+testC$pred2 <- ifelse(testC$pred2 > 0.5,1,0)
+table(testC$marital2, testC$pred2)
+# accuracy (288+28)/(288+35+94+28) = 0.71
 
 ```
 
@@ -295,6 +297,7 @@ table(validC$marital2, validC$pred)
 For both decision trees and random forests (below) we tested using both the complete cases and imputing data to fill in missing values. In the cases of both the complete cases and imputed data, decision tree models for all 3 ballots were more accurate than their random forest counterparts. For these initial runs, we tested our models on their corresponding training sets.
 
 ### Model: Decision Trees with Complete Cases: Initial Tests on Complete Cases Training Sets
+We trained decision tree models on data from complete observations from Ballots A, B and C, and we then tested these models on their corresponding testing sets (and then compared the accuracy rates to those of the imputed models). As an example, the model based on the complete observations for Ballot A had an accuracy rate of 75.38%, with an accuracy rate in predicting married statuses of 78.31% versus an error in predicting split statuses of 59.76%. 
 ``` {r decision trees complete, include=FALSE, cache=TRUE}
 
 #Ballot A
@@ -330,6 +333,7 @@ table(trainCpred, trainC$marital2)
 ##Source: https://www.r-bloggers.com/using-decision-trees-to-predict-infant-birth-weights/
 ####Decision trees: more error in predicting married (2/3), more accurate with predicting split (4/5)
 ```
+
 
 ```{r knn imputation, include=FALSE, cache=TRUE}
 #using DMwR package
@@ -374,7 +378,9 @@ validCknn <- knnOutputC[rand>0.15 & rand <0.3,]
 testCknn <- knnOutputC[rand<0.15,]
 ```
 
-### Model: Decision Trees with Imputed Values: Initial Tests on Imputed Data Training Sets 
+### Model: Decision Trees with Imputed Values: Initial Tests on Imputed Data Training Sets
+We trained decision tree models on imputed data for Ballots A, B, C and then tested them. As with the random forest models, the decision model based on Ballot C data with imputed observations was most accurate. It had an overall error rate of 78.73%. The tree below shows that the splits were based on income, happiness, degree, age, region at age 16, work status, financial satisfaction, family life at age 16, church attendance, and political views. 
+
 ``` {r imputed decision trees, include=FALSE, cache=TRUE}
 ###Decision Trees 
 
@@ -405,12 +411,21 @@ table(trainCpredknn, trainCknn$marital2)
 
 ```
 
+```{r Imputed Ballot C, echo=FALSE, warning=FALSE, message=FALSE}
+rpart.plot(rtree_fitCknn, shadow.col="gray", nn=TRUE)
+```
+
 ### Decision Trees: Comparing Predictive Accuracy of Imputed and Complete Case Decision Tree Models on Complete Case Test Sets 
-##The most accurate model that predicts split (divorce/separate) outcomes is the imputed decision tree model based on Ballot C. The model's overall accuracy rate in predicting marital status is 75.51% It has a 78.16% accuracy rate at predicting married statuses, and a 60% accuracy rate at predicting splits. 
+The most accurate model that predicts split (divorce/separate) outcomes is the imputed decision tree model based on Ballot C. The model's overall accuracy rate in predicting marital status is 75.51%. It has a 78.16% accuracy rate at predicting married statuses, and a 60% accuracy rate at predicting splits. 
 
 
-    
-```{r test models on complete data, include=FALSE, cache=TRUE}
+imputed Ballot C | predicted marriage  | predicted split | accuracy
+-----------------|---------------------|-----------------|----------
+married          |297                  |83               | 0.78 
+split            |26                   |39               | 0.60
+
+
+```{r test models on complete data, include=FALSE, cache=TRUE, message=FALSE, warning=FALSE}
 #Ballot A
 ###Complete on Complete  
     rtree_fitAcc <-rpart(marital2 ~ year + sexeduc + region + premarsx + xmarsex + partyid + fund + childs + degree + Agecat1 + widowed + wrkstat + polviews + happy + class + income + reg16 + family16 + born + parborn + sizecat + attend + relig16 + bible + satfin + abnomore + absingle + divlaw + fefam, data = trainA, method = 'class', cp = 0.00739645)
@@ -479,18 +494,10 @@ rtree_fitCknn <-rpart(marital2 ~ year + region +  pornlaw + partyid + fund + chi
 
 
 
-```{r}
-{r Imputed Tree Ballot C, echo=FALSE, warning=FALSE, message=FALSE}
-grid.arrange(ImpTreeC, ncol = 2)
-```
-
-trainCpredknn | predicted marriage  | predicted split
---------------|---------------------|----------------
-married       |297                  |83
-split         |26                   |39
-
 ## Analysis Method Three: Random Forests
 ### Random Forests with Complete Cases
+We trained a set of random forest models on data from complete observations from Ballots A, B and C, and we then tested these models on their corresponding validation sets. The model based on the complete observations for Ballot C had an overall error rate of 23.79%, with an error in predicting married statuses of 5.64% vs. an error in predicting split statuses of 67.41%.
+
 ```{r rf complete cases, include=FALSE, cache=TRUE}
 ######Train-Test
 ## Train-validate-test split for GSS Ballot A
@@ -625,6 +632,8 @@ varImpPlot(forestCcomplete)
 ```
 
 ### Random Forests with Imputed Values
+Just as we did with the models based on the complete observations, we trained random forest models on imputed data for Ballots A, B, C and then tested them on their corresponding validation sets. Again, the model based on Ballot C data with imputed observations was most accurate. It had an overall error rate of 24.6%, with an error in correctly predicting married respondents of 5.5% and an error in correctly predicting split respondents of 70.5%. 
+
 ```{r rf imputed, include=FALSE, cache=TRUE}
 ####Trying Random Forest with condensed variables 
  
@@ -770,6 +779,8 @@ varImpPlot(forestC)
 ```
 
 ### Random Forests: Comparing Results
+Finally, we compared our random forest models by testing them on the test (rather than validation) sets corresponding to the complete observations for Ballots A, B and C. Here, the random forest model based on imputed data for Ballot C was most accurate. It had an overall error rate of 23.87% -- overally, it predicted marital status with 77% accuracy. It predicted married respondents with a 95.5% accuracy rate (4.5% error rate) and split respondents with a 29.5% accuracy rate (70.5% error rate). From these results, our random forest model based on imputed data for Ballot C could be a useful tool for predicting whether/not a respondent is married (and perhaps be/stay married), but not very powerful with respect to divorce. 
+
 ```{r rf complete model on test data, include=FALSE, cache=TRUE}
 
 ##Complete on Complete (use 'test' rather than 'validate')
@@ -851,16 +862,19 @@ sil.plot.a <- fviz_nbclust(gss.a.mat, kmeans, method = "silhouette")
   # optimal cluster is 2! 
 # compute kmeans clusters
 km.a <- kmeans(gss.a.mat, 2, 10)
+
 # compute hierarchical clusters and check silhouette for validation 
 hc.a <- eclust(gss.a.mat, "hclust", k=2, method="ward.D2", graph=FALSE)
 sil.a <- hc.a$silinfo
 sil.a$clus.avg.widths
-  # not very good  ~0.45
+  # not very good 0.44/0.42
+
 # compute PAM clusters
 pam.a <- pam(gss.a.mat, 2)
 # visulize as silhouette plot
 fviz_silhouette(pam.a)
   # similar to hierarchical
+
 
 #compare clusters to marital status
 table(GSS.A.comp$marital2, km.a$cluster)
@@ -869,22 +883,23 @@ table(GSS.A.comp$marital2, pam.a$cluster)
 ```
 
 For example, using the data from Ballot A, an elbow plot and a silhouette plot both indicate that the number of clusters should be 2. 
+
 ```{r cluster output A, echo=FALSE, warning=FALSE, message=FALSE}
 grid.arrange(elbow.a, sil.plot.a, ncol=2)
 ```
 
-However, none of kmeans, pam, and hierarchical clustering methods correctly categorizes by married and split. 
+However, none of kmeans, pam, and hierarchical clustering methods correctly categorizes by married and split. The following table shows the "accuracy" as calculcated by the number of married observations assigned to cluster 1 and the number of split observations assigned to cluster 2.  
 ```{r cluster B and C, include=FALSE, cache=TRUE}
 #determine optimal number of clusters using method within-cluster sum of squares
 # visualize as line ("elbow" method)
 elbow.b <- fviz_nbclust(gss.b.mat, kmeans, method = "wss") 
 # (silhouette method)
 sil.plot.b <- fviz_nbclust(gss.b.mat, kmeans, method = "silhouette") 
-  # optimal cluster is 2! 
+  # optimal cluster is 2
+
 # compute kmeans clusters
 km.b <- kmeans(gss.b.mat, 2, 10)
-#ksil.a <- silhouette(km.a$cluster, dist(diss.a))
-#head(ksil.a)
+
 # compute hierarchical clusters and check silhouette for validation 
 hc.b <- eclust(gss.b.mat, "hclust", k=2, method="complete", graph=FALSE)
 sil.b <- hc.b$silinfo
@@ -909,10 +924,10 @@ fviz_nbclust(gss.c.mat, kmeans, method = "wss")
 # (silhouette method)
 fviz_nbclust(gss.c.mat, kmeans, method = "silhouette") 
   # optimal cluster is 2! 
+
 # compute kmeans clusters
 km.c <- kmeans(gss.c.mat, 2, 10)
-#ksil.a <- silhouette(km.a$cluster, dist(diss.a))
-#head(ksil.a)
+
 # compute hierarchical clusters and check silhouette for validation 
 hc.c <- eclust(gss.c.mat, "hclust", k=2, method="complete", graph=FALSE)
 sil.c <- hc.c$silinfo
@@ -931,8 +946,16 @@ table(GSS.C.comp$marital2, hc.c$cluster)
 table(GSS.C.comp$marital2, pam.c$cluster)
 ```
 
-kmeans    | predicted marriage | predicted split
-----------|--------------------|----------------
-married   | 940                | 1453
-split     | 380                | 599
+Method       | Overall accuracy  
+-------------|------------------
+kmeans       | 0.55 
+hierarchical | 0.48
+PAM          | 0.48
+
+As another test, average silhouette widths for the hierarchical clusters was calculated, but were only 0.44 and 0.42 (close to 1 is ideal). The results from Ballots B and C were not any more accurate, indicating that clustering is not the optimal method for this analysis. 
+
+## Conclusion
+In the end, we selected two different models as being the best predictors. In terms of predicting the likelihood of being married, the random forest model based on imputed data for Ballot C was most accurate. In terms of predicting the likelihood of being divorced, the decision tree model based on imputed data for Ballot C was most accurate.
+
+Our analysis has limitations in its accuracy and its usefulness for policymakers or marriage counselors. Its accuracy is limited in that we only use data from one half of a couple. Our predictions would likely be much more accurate if we had data on both partners. Its usefulness may be limited in its application to younger generations if their patterns of marriage and divorce differ significantly from those of the people in our dataset. Despite this, our analysis provides some insights into characteristics that are related to an individual's likelihood of getting a divorce. 
 
