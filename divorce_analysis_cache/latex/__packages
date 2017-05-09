@@ -6,3 +6,12 @@ stargazer
 factoextra
 NbClust
 cluster
+rpart
+rpart.plot
+lattice
+survival
+Formula
+Hmisc
+DMwR
+randomForest
+plotROC
