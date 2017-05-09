@@ -9,29 +9,24 @@ Our project will provide a way for marriage counselors or policymakers to get an
 Our null hypothesis will be that a respondent will not become divorced, whereas our alternate hypothesis is that a respondent will become divorced. Our model will then provide a probability score of the likelihood that a respondent will become divorced in the future.  
 
 ## Data Used
-Our dataset will be taken from the General Social Survey (GSS) and focus on observations from 1990 to 2014. According to the [GSS website](http://gss.norc.org/About-The-GSS)
+Our dataset will be taken from the General Social Survey (GSS) and focus on observations from 1996 to 2014. According to the [GSS website](http://gss.norc.org/About-The-GSS)
 >The GSS contains a standard core of demographic, behavioral, and attitudinal questions, plus topics of special interest. Among the topics covered are civil liberties, crime and violence, intergroup tolerance, morality, national spending priorities, psychological well-being, social mobility, and stress and traumatic events. Altogether the GSS is the single best source for sociological and attitudinal trend data covering the United States.
 
-We have extracted the following variables for our analysis:
-- "sexeduc": would the respondent be for or against sex education in the public schools?
-- "region": Region of interview
-- "premarsx": Views on premarital sex (always wrong, almost always wrong, wrong only sometimes, or not wrong at all)
-- "xmarsex": Views on extramarital sex (always wrong, almost always wrong, wrong only sometimes, or not wrong at all)
-- "pornlaw": Views on pornography laws ((1) there should be laws against the distribution of pornography whatever the age; (2) there should be laws against the distribution of pornography to persons under 18; (3) there should be no laws formitting the distribution of pornography; (8) don't know; (9) no answer; (IAP) not applicable)
-- "marital": Marital status (married, widowed, divorced, separated, or never been married)
-- "partyid": Party ID ((0) strong Democrat; (1) not very strong Democrat; (2) Independent, close to Democrat; (3) Independent (neither, no response); (4) Independent, close to Republican; (5) Not very strong Republican; (6) Strong Republican; (7) Other party, refused to say; (8) Don't know; (9) No answer)
-- "fund": how fundamental is respondent (fundamentalist, moderate, liberal)
-- "childs": number of children (0-8)
-- "age": age of respondent (18-89)
-- "divorce": ever been divorced or separated
-- "widowed": ever been widowed
-- "educ": highest year of school completed (0-20)
-- "wrkstat": respondent's labor force status (fulltime, parttime, retired, keeping house, school, unemployed, other)
-- "polviews": think of self as liberal or conservative (liberal, slightly liberal, moderate, slightly conservative, conservative, other)
-- "happy": general happiness (not too happy, pretty happy, or very happy)
-- "trust": can people be trusted (can, cannot, or depends)
-- "class": subjective class identification (lower, working, middle, upper)
-- "income": total family income ($8000-9999, $10000-14999, $15000-19999, $20000-24999, $25000 or more, other)
+We have extracted the variables on the following characteristics for our analysis: opinions on sex education in
+the public schools; region of interview; opinions on premarital sex; opinions on extramarital sex; views on
+pornography laws; marital status; political party ID; how fundamental is respondent; number of children;
+age of respondent; ever been widowed; highest educational degree achieved; respondent’s labor force status;
+whether the respondent thinks of self as liberal or conservative; general self-reported happiness; can people
+be trusted; self-reported class; self-reported income; region at age 16; who the respondent lived with at
+age 16; religion at age 16; frequency of church attendance; does the respondent believe other people would
+try to take advantage or be fair; does the respondent believe other people usually try to be helpful; size
+of city or town of residence; confidence in scientific community; self-reported job satisfaction; elf-reported
+satisfaction with financial situation; whether abortions should be legal for married women who don’t want
+more children; whether abortions should be legal if the woman is single and doesn’t want to marry; and
+whether the respondent has seen an x-rated movie in the last year.
+Not all of these questions were asked of all respondents. Three ballots were administered, so our data had to
+be analyzed in groups corresponding to each ballot. We also restricted our data to those who were married or
+“split,” split being those who were either divorced or separated.
 
 ## Usage
 - "SourceFile.r": The source file runs the code necessary to download the zipped SPSS (.sav), unzip, convert to an R data file (.rda), save the .rda file as "GSScomplete.rda", and extract our variables of interest into a new R data file, "GSSdivorce.rda". **Due to the large size of the original GSS dataset, this file should only be run if a new copy of the complete GSS dataset is required.**
